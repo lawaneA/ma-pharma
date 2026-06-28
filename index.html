@@ -376,7 +376,11 @@
             <button class="file-remove" onclick="clearFile()">✕</button>
           </div>
         </div>
-
+<!-- Champ Nom et Prénom -->
+<div class="input-group" style="margin-bottom: 20px; text-align: left;">
+  <label for="sender-name" style="display: block; margin-bottom: 8px; font-weight: 500; color: #fff;">Nom et Prénom :</label>
+  <input type="text" id="sender-name" placeholder="Ex: DUPONT Jean" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: #fff; font-family: 'Inter', sans-serif; font-size: 14px;">
+</div>
         <!-- SECTION 3 : boutons -->
         <div class="mail-s3">
           <button class="btn-cancel" onclick="clearFile()">Annuler</button>
@@ -467,43 +471,69 @@
 
     // ── Envoi avec pièce jointe réelle ──
     function sendWithAttachment() {
-      if (!selectedFile) return;
+  // 1. On récupère le champ Nom/Prénom et sa valeur
+  const nameInput = document.getElementById('sender-name');
+  const senderName = nameInput ? nameInput.value.trim() : "";
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        // Crée un FormData simulant l'envoi
-        // Sur mobile : ouvre l'app mail native avec partage du fichier
-        // Sur desktop : utilise mailto + share API si disponible
+  // 2. Vérifications de sécurité (Fichier + Nom)
+  if (!senderName) {
+    alert("Veuillez renseigner votre Nom et Prénom avant d'envoyer.");
+    if(nameInput) nameInput.focus(); // Remet le curseur sur le champ vide
+    return;
+  }
 
-        // Méthode 1 : Web Share API (supporte les fichiers sur iOS/Android)
-        if (navigator.canShare && navigator.canShare({ files: [selectedFile] })) {
-          navigator.share({
-            title: 'Document Pharmacie AZERTY',
-            text: 'Veuillez trouver ci-joint mon document : ' + selectedFile.name,
-            files: [selectedFile]
-          }).catch(() => fallbackMail());
-        } else {
-          fallbackMail();
-        }
-      };
-      reader.readAsDataURL(selectedFile);
-    }
+  if (!selectedFile) {
+    alert("Veuillez d'abord sélectionner un fichier.");
+    return;
+  }
 
-    function fallbackMail() {
-      // Fallback : ouvre mailto avec sujet pré-rempli
-      // Le fichier doit être joint manuellement — on informe l'utilisateur
-      const subject = encodeURIComponent('Document de : NOM Prénom — ' + (selectedFile ? selectedFile.name : ''));
-      const body = encodeURIComponent(
-        'Bonjour,
+  // 3. Animation du bouton de chargement
+  btnSend.textContent = "Envoi en cours...";
+  btnSend.style.opacity = "0.6";
+  btnSend.disabled = true;
 
-Veuillez trouver ci-joint mon document : ' +
-        (selectedFile ? selectedFile.name : '') +
-        '
+  // 4. Lecture et conversion du fichier en Base64
+  const reader = new FileReader();
+  reader.readAsDataURL(selectedFile);
 
-Cordialement,'
-      );
-      window.location.href = 'mailto:lawane.adjid@gmail.com?subject=' + subject + '&body=' + body;
-    }
+  reader.onload = function () {
+    const base64File = reader.result;
+
+    // 5. On prépare TOUTES les variables pour le template EmailJS
+    const templateParams = {
+      name_sender: senderName,      // <-- Remplira {{name_sender}} sur EmailJS
+      file_name: selectedFile.name,  // <-- Remplira {{file_name}}
+      my_file: base64File            // <-- Remplira la pièce jointe
+    };
+
+    // 6. Envoi officiel à l'API
+    // ⚠️ Remplace par ton Service ID et ton Template ID
+    emailjs.send('service_3svkyii', 'template_hlj4f0g', templateParams)
+      .then(function(response) {
+         alert("Succès ! L'ordonnance de " + senderName + " a bien été envoyée.");
+         
+         // On vide le fichier ET le champ texte après succès
+         clearFile(); 
+         if(nameInput) nameInput.value = ""; 
+      }, function(error) {
+         console.error("Échec EmailJS :", error);
+         alert("Erreur lors de l'envoi. Veuillez réessayer.");
+      })
+      .finally(() => {
+         // On remet le bouton à son état initial
+         btnSend.textContent = "Envoyer par mail";
+         btnSend.style.opacity = "1";
+         btnSend.disabled = false;
+         if (selectedFile) btnSend.classList.add('ready');
+      });
+  };
+
+  reader.onerror = function (error) {
+    console.error("Erreur de lecture :", error);
+    alert("Impossible de lire le fichier.");
+  };
+}
+    
   </script>
 
 </body>
