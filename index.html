@@ -146,8 +146,15 @@
     /* Hauteur = 1.5× bento insta, gérée via CSS variable mise par JS */
     .card-mail-wrapper {
       grid-column:1/-1; grid-row:2;
-      position:relative; border-radius:28px; overflow:hidden;
+      position:relative; border-radius:28px; overflow:visible;
       transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,2.2);
+    }
+    /* On re-clip uniquement le fond glass, pas le contenu */
+    .card-mail-wrapper .glass-filter,
+    .card-mail-wrapper .glass-overlay,
+    .card-mail-wrapper .glass-specular {
+      border-radius:28px;
+      overflow:hidden;
     }
 
     .mail-body {
@@ -194,14 +201,19 @@
       border-bottom:1px solid rgba(150,200,255,0.18);
       min-height:68px;
       display:flex; align-items:center;
+      position:relative; z-index:5;
+      overflow:visible;
     }
     .file-empty {
       width:100%; text-align:center;
       font-size:12px; color:rgba(180,210,255,0.35); font-style:italic;
+      transition: opacity 0.2s;
     }
+    .file-empty.hidden { opacity:0; pointer-events:none; }
     .file-preview {
       display:none; width:100%;
       align-items:center; gap:12px;
+      position:absolute; left:16px; right:16px;
     }
     .file-preview.visible { display:flex; }
     .file-icon {
@@ -424,10 +436,9 @@
       selectedFile = file;
       fnameEl.textContent = file.name;
       fsizeEl.textContent = formatSize(file.size);
+      emptyMsg.classList.add('hidden');
       preview.classList.add('visible');
-      emptyMsg.style.display = 'none';
       progressBar.classList.add('visible');
-      // Simule une barre de progression lecture
       setTimeout(() => { progressFill.style.width = '100%'; }, 100);
       btnSend.classList.add('ready');
     }
@@ -436,7 +447,7 @@
       selectedFile = null;
       fileInput.value = '';
       preview.classList.remove('visible');
-      emptyMsg.style.display = '';
+      emptyMsg.classList.remove('hidden');
       progressBar.classList.remove('visible');
       progressFill.style.width = '0%';
       btnSend.classList.remove('ready');
