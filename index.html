@@ -472,39 +472,52 @@ removeFileBtn.addEventListener('click', function(e) {
   btnSend.style.display = 'none';
 });
     // 4. ANIMATION DE LA BARRE DE PROGRESSION
-    function startSatisfyingLoading() {
-      const bar = document.getElementById('progressBarFill');
-      const percentText = document.getElementById('percentage');
-      const statusText = document.getElementById('statusText');
-      const spinnerEl = document.getElementById('spinner');
+   function startSatisfyingLoading() {
+  const bar = document.getElementById('progressBarFill');
+  const percentText = document.getElementById('percentage');
+  const statusText = document.getElementById('statusText');
+  const spinnerEl = document.getElementById('spinner');
 
-      bar.style.transition = "none";
-      bar.style.width = "0%";
-      percentText.innerText = "0%";
-      statusText.innerText = "Préparation...";
+  bar.style.transition = "none";
+  bar.style.width = "0%";
+  percentText.innerText = "0%";
+  statusText.innerText = "Préparation...";
 
-      requestAnimationFrame(() => {
-        bar.style.transition = "width 0.5s ease-out";
-        bar.style.width = "50%";
-        percentText.innerText = "50%";
-        statusText.innerText = "Téléchargement...";
-      });
-
-      setTimeout(() => {
-        bar.style.transition = "width 2.5s ease-in-out";
-        bar.style.width = "75%";
-        percentText.innerText = "75%";
-      }, 500); 
-
-      setTimeout(() => {
-        bar.style.transition = "width 0.4s ease-in";
-        bar.style.width = "100%";
-        percentText.innerText = "100%";
-        statusText.innerText = "Fichier prêt !";
-        if (spinnerEl) spinnerEl.style.display = 'none';
-      }, 3000); 
+  // Anime le chiffre en suivant la largeur réelle de la barre
+  function animatePercent(from, to, duration, onDone) {
+    const start = performance.now();
+    function step(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const value = Math.round(from + (to - from) * progress);
+      percentText.innerText = value + "%";
+      if (progress < 1) requestAnimationFrame(step);
+      else if (onDone) onDone();
     }
+    requestAnimationFrame(step);
+  }
 
+  requestAnimationFrame(() => {
+    bar.style.transition = "width 0.5s ease-out";
+    bar.style.width = "50%";
+    statusText.innerText = "Téléchargement...";
+    animatePercent(0, 50, 500);
+  });
+
+  setTimeout(() => {
+    bar.style.transition = "width 2.5s ease-in-out";
+    bar.style.width = "75%";
+    animatePercent(50, 75, 2500);
+  }, 500);
+
+  setTimeout(() => {
+    bar.style.transition = "width 0.4s ease-in";
+    bar.style.width = "100%";
+    statusText.innerText = "Fichier prêt !";
+    animatePercent(75, 100, 400, () => {
+      if (spinnerEl) spinnerEl.style.display = 'none';
+    });
+  }, 3000);
+}
     // 5. FONCTION D'ENVOI (EMAILJS)
     function sendWithAttachment() {
       const senderName = nameInput ? nameInput.value.trim() : "";
