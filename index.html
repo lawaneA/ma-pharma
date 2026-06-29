@@ -143,19 +143,41 @@
     .btn-platform .btn-text { position:relative; z-index:2; }
 
     /* ======================================================= */
-    /* NOUVEAU COMPOSANT D'UPLOAD PREMIUM (STYLE FONCÉ)      */
+    /* NOUVEAU COMPOSANT D' PREMIUM (STYLE FONCÉ)      */
     /* ======================================================= */
-    .upload-container {
-      grid-column: 1 / -1; 
+   .-container {
+      grid-column: 1 / -1;
       width: 100%;
-      background: radial-gradient(circle at 50% 30%, #11122b 0%, #080818 80%);
       border-radius: 28px;
       padding: 24px;
       box-sizing: border-box;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 0 24px rgba(42, 95, 255, 0.08);
       position: relative;
+      overflow: hidden;
+      /* Glass layers inline (pas de glass-card wrapper ici) */
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: var(--lg-bg);
+      /* Même contour lumineux que les autres cards */
+      background-image:
+        linear-gradient(135deg,
+          rgba(255,255,255,0.765) 0%,
+          rgba(255,255,255,0.765) 12%,
+          rgba(100,160,255,0.28) 28%,
+          rgba(100,160,255,0.18) 55%,
+          rgba(100,160,255,0.28) 72%,
+          rgba(255,255,255,0.722) 88%,
+          rgba(255,255,255,0.722) 100%
+        );
+      background-clip: padding-box;
+      border: 1.5px solid transparent;
+      /* Contour en pseudo-élément via box-shadow interne */
+      box-shadow:
+        inset 1px 1px 0 rgba(255,255,255,0.70),
+        inset 0 0 8px rgba(255,255,255,0.70),
+        0 8px 32px rgba(0,0,0,0.25);
+      /* Réinitialise le background-image pour ne garder que le fond glass */
+      background: var(--lg-bg);
     }
-
     /* Champs de saisie intégrés au style sombre */
     .input-group label {
       display: block; margin-bottom: 8px; font-weight: 500; color: #fff; font-size: 14px;
@@ -287,7 +309,7 @@
       </div>
     </a>
 
-    <div class="upload-container">
+    <div class="-container">
       <div style="color:#fff; font-weight:800; font-size:18px; margin-bottom:15px; text-align:center;">Envoyer votre ordonnance</div>
       
       <div class="input-group">
@@ -307,8 +329,8 @@
             <div class="badge-files">FILES</div>
           </div>
           <div class="text-details">
-            <div id="uploadTitle" class="title">Ajouter un document</div>
-            <div id="uploadSubtitle" class="subtitle">Sélectionnez votre ordonnance</div>
+            <div id="Title" class="title">Ajouter un document</div>
+            <div id="Subtitle" class="subtitle">Sélectionnez votre ordonnance</div>
           </div>
         </div>
       </div>
@@ -344,8 +366,8 @@
 
   <script>
     const fileInput = document.getElementById('fileInput');
-    const uploadTitle = document.getElementById('uploadTitle');
-    const uploadSubtitle = document.getElementById('uploadSubtitle');
+    const Title = document.getElementById('Title');
+    const Subtitle = document.getElementById('Subtitle');
     const progressPanel = document.getElementById('progressPanel');
     const progressBarFill = document.getElementById('progressBarFill');
     const percentageText = document.getElementById('percentage');
@@ -359,8 +381,8 @@
     fileInput.addEventListener('change', function(e) {
       selectedFile = e.target.files[0];
       if (selectedFile) {
-        uploadTitle.innerText = selectedFile.name;
-        uploadSubtitle.innerText = (selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
+        Title.innerText = selectedFile.name;
+        Subtitle.innerText = (selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
         
         // Affiche la barre et le bouton
         progressPanel.style.display = 'flex';
@@ -424,8 +446,8 @@
              if(nameInput) nameInput.value = "";
              if(phoneInput) phoneInput.value = "";
              
-             uploadTitle.innerText = "Ajouter un document";
-             uploadSubtitle.innerText = "Sélectionnez votre ordonnance";
+             Title.innerText = "Ajouter un document";
+             Subtitle.innerText = "Sélectionnez votre ordonnance";
              progressPanel.style.display = 'none';
              progressBarFill.style.width = '0%';
              spinner.style.display = 'block';
