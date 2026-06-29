@@ -312,16 +312,8 @@
 
     <div class="upload-container">
       <div style="color:#fff; font-weight:800; font-size:18px; margin-bottom:30px; text-align:center;">Envoyer votre ordonnance</div>
-      
-      <div class="input-group">
-        <label for="sender-name">Nom et Prénom :</label>
-        <input type="text" id="sender-name" placeholder="Ex: DUPONT Jean">
-        
-        <label for="sender-phone">Téléphone (Optionnel) :</label>
-        <input type="tel" id="sender-phone" placeholder="06 12 34 56 78">
-      </div>
 
-      <div class="file-trigger-zone" id="drop-zone">
+ <div class="file-trigger-zone" id="drop-zone">
         <input type="file" id="fileInput" accept="image/*,application/pdf">
         <div class="file-info-row">
           <div class="folder-icon-container">
@@ -351,6 +343,16 @@
 
       <button class="btn-send" id="btn-send" onclick="sendWithAttachment()">Envoyer l'ordonnance</button>
     </div>
+      
+      <div class="input-group">
+        <label for="sender-name">Nom et Prénom :</label>
+        <input type="text" id="sender-name" placeholder="Ex: DUPONT Jean">
+        
+        <label for="sender-phone">Téléphone (Optionnel) :</label>
+        <input type="tel" id="sender-phone" placeholder="06 12 34 56 78">
+      </div>
+
+     
 
   </div>
 
