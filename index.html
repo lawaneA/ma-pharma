@@ -406,7 +406,8 @@
     }
     updateSendBtn();
   }
-
+    
+  let phoneValidateTimer = null;
   if (phoneInput) {
     phoneInput.addEventListener('input', function(e) {
       let raw = e.target.value;
@@ -424,7 +425,8 @@
         if (digits.startsWith('0') && digits.length > 10) digits = digits.substring(0, 10);
         e.target.value = digits.replace(/(\d{2})(?=\d)/g, '$1 ');
       }
-      validatePhone();
+      clearTimeout(phoneValidateTimer);
+      phoneValidateTimer = setTimeout(validatePhone, 3000);
     });
     phoneInput.addEventListener('blur', validatePhone);
   }
