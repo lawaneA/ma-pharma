@@ -367,61 +367,33 @@
   </div>
 
   <script>
-    const fileInput = document.getElementById('fileInput');
-    const uploadTitle = document.getElementById('uploadTitle');
-    const uploadSubtitle = document.getElementById('uploadSubtitle');
-    const progressPanel = document.getElementById('progressPanel');
-    const progressBarFill = document.getElementById('progressBarFill');
-    const percentageText = document.getElementById('percentage');
-    const statusText = document.getElementById('statusText');
-    const spinner = document.getElementById('spinner');
-    const btnSend = document.getElementById('btn-send');
-    
-    let selectedFile = null;
-  
-    // Crée un input file invisible et le déclenche au clic sur le bouton
-   const fileInput = document.createElement('input');
-   fileInput.type = 'file';
-   fileInput.accept = 'image/*,application/pdf';
-   document.body.appendChild(fileInput);
+  const btnSend = document.getElementById('btn-send');
+  let selectedFile = null;
 
-    // Quand un fichier est sélectionné
-    fileInput.addEventListener('change', function(e) {
-      selectedFile = e.target.files[0];
-      
-      if (selectedFile) {
-        uploadTitle.innerText = selectedFile.name;
-        uploadSubtitle.innerText = (selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
-        
-        // Affiche la barre et le bouton
-        progressPanel.style.display = 'flex';
-        btnSend.style.display = 'block';
-        
-        // Animation fluide de la barre (simulation de préparation)
-        setTimeout(() => {
-          progressBarFill.style.width = '100%';
-          percentageText.innerText = '100%';
-          statusText.innerText = 'Fichier prêt !';
-          spinner.style.display = 'none';
-        }, 100);
-      }
-    });
+  // Crée un input file invisible et le déclenche au clic sur le bouton
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*,application/pdf';
+  document.body.appendChild(fileInput);
 
-    // Fonction d'envoi EmailJS
-    function sendWithAttachment() {
-      const nameInput = document.getElementById('sender-name');
-      const phoneInput = document.getElementById('sender-phone');
-      
-      const senderName = nameInput ? nameInput.value.trim() : "";
-      const senderPhone = phoneInput ? phoneInput.value.trim() : "";
+  fileInput.addEventListener('change', function(e) {
+    selectedFile = e.target.files[0];
+  });
 
-      if (!senderName) {
-        alert("Veuillez renseigner votre Nom et Prénom.");
-        if(nameInput) nameInput.focus();
-        return;
-      }
+  function sendWithAttachment() {
+    const nameInput = document.getElementById('sender-name');
+    const phoneInput = document.getElementById('sender-phone');
 
-     if (!selectedFile) {
+    const senderName = nameInput ? nameInput.value.trim() : "";
+    const senderPhone = phoneInput ? phoneInput.value.trim() : "";
+
+    if (!senderName) {
+      alert("Veuillez renseigner votre Nom et Prénom.");
+      if (nameInput) nameInput.focus();
+      return;
+    }
+
+    if (!selectedFile) {
       // Ouvre le sélecteur de fichier si rien n'est encore sélectionné
       fileInput.click();
       fileInput.addEventListener('change', function onFile(e) {
@@ -432,62 +404,49 @@
       return;
     }
 
-      // Animation du bouton pendant l'envoi
-      btnSend.textContent = "Envoi en cours...";
-      btnSend.style.opacity = "0.6";
-      btnSend.disabled = true;
+    btnSend.textContent = "Envoi en cours...";
+    btnSend.style.opacity = "0.6";
+    btnSend.disabled = true;
 
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
 
-      reader.onload = function () {
-        const base64File = reader.result;
+    reader.onload = function () {
+      const base64File = reader.result;
 
-        const templateParams = {
-          name_sender: senderName,
-          phone_sender: senderPhone,
-          file_name: selectedFile.name,
-          my_file: base64File
-        };
-
-        // ⚠️ N'oublie pas de vérifier tes identifiants EmailJS ici si besoin ⚠️
-        emailjs.send('service_3svkyii', 'template_hlj4f0g', templateParams)
-          .then(function(response) {
-             alert("Succès ! L'ordonnance de " + senderName + " a bien été envoyée.");
-             
-             // Remise à zéro
-             selectedFile = null;
-             fileInput.value = "";
-             if(nameInput) nameInput.value = "";
-             if(phoneInput) phoneInput.value = "";
-             
-             uploadTitle.innerText = "Ajouter un document";
-             uploadSubtitle.innerText = "Sélectionnez votre ordonnance";
-             progressPanel.style.display = 'none';
-             progressBarFill.style.width = '0%';
-             spinner.style.display = 'block';
-             btnSend.style.display = 'none';
-
-          }, function(error) {
-             console.error("Échec EmailJS :", error);
-             alert("Erreur lors de l'envoi. Veuillez réessayer.");
-          })
-          .finally(() => {
-             btnSend.textContent = "Envoyer l'ordonnance";
-             btnSend.style.opacity = "1";
-             btnSend.disabled = false;
-          });
+      const templateParams = {
+        name_sender: senderName,
+        phone_sender: senderPhone,
+        file_name: selectedFile.name,
+        my_file: base64File,
       };
 
-      reader.onerror = function (error) {
-        console.error("Erreur de lecture :", error);
-        alert("Impossible de lire le fichier.");
-        btnSend.textContent = "Envoyer l'ordonnance";
-        btnSend.style.opacity = "1";
-        btnSend.disabled = false;
-      };
-    }
-  </script>
+      emailjs.send('service_3svkyii', 'template_hlj4f0g', templateParams)
+        .then(function () {
+          alert("Succès ! L'ordonnance de " + senderName + " a bien été envoyée.");
+          selectedFile = null;
+          fileInput.value = "";
+          if (nameInput) nameInput.value = "";
+          if (phoneInput) phoneInput.value = "";
+        }, function (error) {
+          console.error("Échec EmailJS :", error);
+          alert("Erreur lors de l'envoi. Veuillez réessayer.");
+        })
+        .finally(() => {
+          btnSend.textContent = "Envoyer l'ordonnance";
+          btnSend.style.opacity = "1";
+          btnSend.disabled = false;
+        });
+    };
+
+    reader.onerror = function () {
+      alert("Impossible de lire le fichier.");
+      btnSend.textContent = "Envoyer l'ordonnance";
+      btnSend.style.opacity = "1";
+      btnSend.disabled = false;
+    };
+  }
+</script>
 
 </body>
 </html>
