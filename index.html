@@ -2,17 +2,15 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,  initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Swift'Link</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script type="text/javascript">
-     (function(){
-        emailjs.init("Apzn8FzYNZlXAQTs-");
-     })();
+     (function(){ emailjs.init("Apzn8FzYNZlXAQTs-"); })();
   </script>
-  
+
   <svg style="position:absolute;width:0;height:0;" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <filter id="lg-dist" x="-20%" y="-20%" width="140%" height="140%">
@@ -23,47 +21,28 @@
   </svg>
 
   <style>
-    :root {
-      --lg-bg: rgba(255,255,255,0.12);
-      --lg-hi: rgba(255,255,255,0.70);
-    }
+    :root { --lg-bg: rgba(255,255,255,0.12); --lg-hi: rgba(255,255,255,0.70); }
     * { margin:0; padding:0; box-sizing:border-box; }
-    
+
     body {
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex; flex-direction: column; align-items: center;
       padding: 32px 16px 64px;
-      background-color: #030a1c; 
-      background-image: url('bg_blue-bule.jpg'); 
+      background-color: #030a1c;
+      background-image: url('bg_blue-bule.jpg');
       background-repeat: no-repeat;
       background-attachment: fixed;
-      
-      /* 🚨 LA CORRECTION EST ICI : On force la hauteur à 130vh pour créer une marge de mouvement */
       background-size: auto 130vh;
-
-      /* J'ai mis 30s au lieu de 60s pour que tu voies bien le mouvement tout de suite. Tu pourras ralentir après ! */
       animation: bg-move-vertical 30s ease-in-out infinite;
     }
-
-    /* 2. Création du mouvement (Keyframes) */
     @keyframes bg-move-vertical {
-      0% { 
-        background-position: center 0%;
-      }
-      50% { 
-        background-position: center 100%;
-      }
-      100% { 
-        background-position: center 0%;
-      }
+      0%   { background-position: center 0%; }
+      50%  { background-position: center 100%; }
+      100% { background-position: center 0%; }
     }
-
-   @media (min-width: 481px) {
-      body {
-        /* 🚨 ICI AUSSI : On met 130vh pour que l'animation marche aussi sur PC */
-        background-size: 480px 130vh; 
-      }
+    @media (min-width: 481px) {
+      body { background-size: 480px 130vh; }
     }
 
     /* ══ GLASS ══ */
@@ -72,15 +51,9 @@
       transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,2.2), box-shadow 0.3s ease;
     }
     .glass-card:hover { transform:translateY(-4px) scale(1.025); }
-    .glass-filter {
-      position:absolute; inset:0; z-index:0;
-      backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-    }
+    .glass-filter { position:absolute; inset:0; z-index:0; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
     .glass-overlay { position:absolute; inset:0; z-index:1; background:var(--lg-bg); }
-    .glass-specular {
-      position:absolute; inset:0; z-index:2; border-radius:inherit; overflow:hidden;
-      box-shadow:inset 1px 1px 0 var(--lg-hi), inset 0 0 8px var(--lg-hi);
-    }
+    .glass-specular { position:absolute; inset:0; z-index:2; border-radius:inherit; overflow:hidden; box-shadow:inset 1px 1px 0 var(--lg-hi), inset 0 0 8px var(--lg-hi); }
     .glass-content { position:relative; z-index:3; }
 
     /* ══ HEADER ══ */
@@ -89,81 +62,37 @@
       position:absolute; inset:0; border-radius:28px; pointer-events:none; z-index:10;
       background: linear-gradient(135deg, rgba(255,255,255,0.765) 0%, rgba(255,255,255,0.765) 12%, rgba(100,160,255,0.28) 28%, rgba(100,160,255,0.18) 55%, rgba(100,160,255,0.28) 72%, rgba(255,255,255,0.722) 88%, rgba(255,255,255,0.722) 100%) border-box;
       -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite:destination-out;
-      mask-composite:exclude;
+      -webkit-mask-composite:destination-out; mask-composite:exclude;
       border:1.5px solid transparent;
     }
-    .profile-inner {
-      display:flex; flex-direction:column; align-items:center;
-      gap:12px; padding:36px 24px 30px;
-    }
-    .profile-avatar {
-      width:110px; height:110px; border-radius:50%;
-      object-fit:contain; background:rgba(255,255,255,0.85); padding:8px;
-      box-shadow:0 4px 20px rgba(0,0,0,0.18), inset 0 0 0 1.5px rgba(255,255,255,0.5);
-    }
-    .profile-name {
-      font-size:24px; font-weight:800; color:#fff;
-      letter-spacing:-0.5px; text-align:center;
-      text-shadow:0 2px 12px rgba(0,40,120,0.4);
-    }
+    .profile-inner { display:flex; flex-direction:column; align-items:center; gap:12px; padding:36px 24px 30px; }
+    .profile-avatar { width:110px; height:110px; border-radius:50%; object-fit:contain; background:rgba(255,255,255,0.85); padding:8px; box-shadow:0 4px 20px rgba(0,0,0,0.18), inset 0 0 0 1.5px rgba(255,255,255,0.5); }
+    .profile-name { font-size:24px; font-weight:800; color:#fff; letter-spacing:-0.5px; text-align:center; text-shadow:0 2px 12px rgba(0,40,120,0.4); }
     .profile-sub { font-size:14px; color:rgba(220,235,255,0.85); font-weight:500; text-align:center; }
 
     /* ══ BENTO GRID ══ */
-    .bento {
-      width:100%; max-width:480px;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      grid-template-rows:auto auto;
-      gap:14px;
-    }
+    .bento { width:100%; max-width:480px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto auto; gap:14px; }
     .card-instagram { grid-column:1; grid-row:1; }
     .card-google    { grid-column:2; grid-row:1; }
-
-    .insta-inner, .google-inner {
-      display:grid;
-      grid-template-rows:1fr auto auto;
-      align-items:center; justify-items:center;
-      padding:26px 16px 20px; gap:14px;
-    }
-    .platform-icon {
-      width:82px; height:82px; object-fit:contain; filter:none;
-      transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,2.2);
-    }
+    .insta-inner, .google-inner { display:grid; grid-template-rows:1fr auto auto; align-items:center; justify-items:center; padding:26px 16px 20px; gap:14px; }
+    .platform-icon { width:82px; height:82px; object-fit:contain; transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,2.2); }
     .platform-icon:hover { transform:scale(0.95); }
-    .card-label {
-      font-size:14px; font-weight:700; color:#fff;
-      text-shadow:0 1px 8px rgba(0,40,120,0.3);
-      text-align:center; line-height:1.4;
-    }
+    .card-label { font-size:14px; font-weight:700; color:#fff; text-shadow:0 1px 8px rgba(0,40,120,0.3); text-align:center; line-height:1.4; }
 
-    /* ══ BOUTONS plateforme ══ */
-    .btn-platform {
-      width:100%; height:3em; border-radius:30em;
-      font-size:15px; font-family:'Poppins',inherit; font-weight:800;
-      border:none; position:relative; overflow:hidden; z-index:1; cursor:pointer;
-      background:rgba(255,255,255,0.90);
-      box-shadow:4px 4px 10px rgba(0,0,0,0.15),-4px -4px 10px rgba(255,255,255,0.6);
-      transition:color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .btn-platform::before {
-      content:''; width:0; height:3em; border-radius:30em;
-      position:absolute; top:0; left:0;
-      transition:width 0.4s ease; z-index:-1;
-    }
+    /* ══ BOUTONS PLATEFORME ══ */
+    .btn-platform { width:100%; height:3em; border-radius:30em; font-size:15px; font-family:'Poppins',inherit; font-weight:800; border:none; position:relative; overflow:hidden; z-index:1; cursor:pointer; background:rgba(255,255,255,0.90); box-shadow:4px 4px 10px rgba(0,0,0,0.15),-4px -4px 10px rgba(255,255,255,0.6); transition:color 0.3s ease, box-shadow 0.3s ease; }
+    .btn-platform::before { content:''; width:0; height:3em; border-radius:30em; position:absolute; top:0; left:0; transition:width 0.4s ease; z-index:-1; }
     .btn-platform:active::before { width:100%; }
     .btn-platform:active { color:#fff !important; box-shadow:none; }
     .btn-platform:hover { box-shadow:4px 4px 14px rgba(0,0,0,0.18),-4px -4px 14px rgba(255,255,255,0.7); }
-    .btn-insta  { color:#d6249f; }
-    .btn-insta::before  { background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 30%,#d6249f 60%,#285AEB 90%); }
+    .btn-insta { color:#d6249f; }
+    .btn-insta::before { background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 30%,#d6249f 60%,#285AEB 90%); }
     .btn-google-plat { color:#4285F4; }
     .btn-google-plat::before { background:conic-gradient(from 0deg,#4285F4 0%,#34A853 25%,#FBBC05 50%,#EA4335 75%,#4285F4 100%); }
     .btn-platform .btn-text { position:relative; z-index:2; }
 
-    /* ======================================================= */
-    /* NOUVEAU COMPOSANT D' PREMIUM (STYLE FONCÉ)      */
-    /* ======================================================= */
-   .-container {
+    /* ══ CONTAINER FORMULAIRE (GLASS) ══ */
+    .-container {
       grid-column: 1 / -1;
       width: 100%;
       border-radius: 28px;
@@ -171,47 +100,41 @@
       box-sizing: border-box;
       position: relative;
       overflow: hidden;
-      /* Glass layers inline (pas de glass-card wrapper ici) */
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       background: var(--lg-bg);
-      /* Même contour lumineux que les autres cards */
-      background-image:
-        linear-gradient(135deg,
-          rgba(255,255,255,0.765) 0%,
-          rgba(255,255,255,0.765) 12%,
-          rgba(100,160,255,0.28) 28%,
-          rgba(100,160,255,0.18) 55%,
-          rgba(100,160,255,0.28) 72%,
-          rgba(255,255,255,0.722) 88%,
-          rgba(255,255,255,0.722) 100%
-        );
-      background-clip: padding-box;
-      border: 1.5px solid transparent;
-      /* Contour en pseudo-élément via box-shadow interne */
-      box-shadow:
-        inset 1px 1px 0 rgba(255,255,255,0.70),
-        inset 0 0 8px rgba(255,255,255,0.70),
-        0 8px 32px rgba(0,0,0,0.25);
-      /* Réinitialise le background-image pour ne garder que le fond glass */
-      background: var(--lg-bg);
+      box-shadow: inset 1px 1px 0 rgba(255,255,255,0.70), inset 0 0 8px rgba(255,255,255,0.70), 0 8px 32px rgba(0,0,0,0.25);
     }
-    /* Champs de saisie intégrés au style sombre */
-    .input-group label {
-      display: block; margin-bottom: 8px; font-weight: 500; color: #fff; font-size: 14px;
-    }
+
+    /* ══ CHAMPS ══ */
+    .input-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #fff; font-size: 14px; }
     .input-group input {
-      width: 100%; padding: 12px; border-radius: 8px; 
-      border: 1px solid rgba(255,255,255,0.2); 
-      background: rgba(255,255,255,0.05); color: #fff; 
+      width: 100%; padding: 12px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05); color: #fff;
       font-family: 'Inter', sans-serif; font-size: 14px;
       margin-bottom: 16px; transition: border 0.3s;
     }
-    .input-group input:focus {
-      outline: none; border-color: rgba(42, 95, 255, 0.8);
-    }
+    .input-group input::placeholder { color: rgba(255,255,255,0.3); }
+    .input-group input:focus { outline: none; border-color: rgba(42, 95, 255, 0.8); }
+    .input-group input.input-error { border-color: rgba(255, 80, 80, 0.8) !important; background: rgba(255, 60, 60, 0.06) !important; }
+    .input-group input.input-ok { border-color: rgba(42, 200, 120, 0.7) !important; }
 
-    /* Zone de clic pour le fichier */
+    .field-error-msg { display: none; color: #ff6b6b; font-size: 11px; font-weight: 500; margin-top: -12px; margin-bottom: 12px; }
+
+    /* ══ TEXTAREA ══ */
+    .input-group textarea {
+      width: 100%; padding: 12px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05); color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      margin-bottom: 16px; transition: border 0.3s;
+      resize: vertical; min-height: 60px; max-height: 120px;
+    }
+    .input-group textarea:focus { outline: none; border-color: rgba(42, 95, 255, 0.8); }
+    .input-group textarea::placeholder { color: rgba(255,255,255,0.3); }
+
+    /* ══ ZONE DÉPÔT FICHIER ══ */
     .file-trigger-zone {
       position: relative;
       padding: 16px;
@@ -219,88 +142,79 @@
       border: 1px dashed rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
     .file-trigger-zone:hover { background: rgba(255, 255, 255, 0.08); }
-
-    /* Bouton de suppression du fichier */
-.file-remove-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 30;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #fff;
-  font-size: 14px;
-  line-height: 1;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-.file-remove-btn:hover { background: rgba(220, 60, 60, 0.55); }
-
-    .file-trigger-zone input[type="file"] {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      opacity: 0; cursor: pointer; z-index: 20;
+    .file-trigger-zone.drag-over {
+      background: rgba(42, 95, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 0 0 3px rgba(42, 95, 255, 0.35), inset 0 0 16px rgba(42, 95, 255, 0.1);
     }
-
+    .file-trigger-zone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 20; }
     .file-info-row { display: flex; align-items: center; gap: 18px; }
 
-   /* Icone Dossier 3D */
-    .folder-icon-container { position: relative; width: 68px; height: 56px; filter: drop-shadow(0 6px 20px rgba(26, 63, 204, 0.55)); }
+    /* ══ ICÔNE DOSSIER 3D ══ */
+    .folder-icon-container { position: relative; width: 68px; height: 56px; filter: drop-shadow(0 6px 20px rgba(26, 63, 204, 0.55)); flex-shrink: 0; }
     .folder-back { position: absolute; top: 0; left: 0; width: 58px; height: 44px; background: linear-gradient(135deg, #112ba1, #1a3fcc); border-radius: 6px 12px 6px 6px; }
     .folder-back::before { content: ''; position: absolute; top: -4px; left: 0; width: 24px; height: 10px; background: #112ba1; border-radius: 4px 4px 0 0; }
     .folder-front { position: absolute; bottom: 0; left: 2px; width: 64px; height: 44px; background: linear-gradient(135deg, #1a3fcc, #2a5fff); border-radius: 6px; transform: skewX(-3deg); overflow: hidden; }
-    .folder-front::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent); }
-    .badge-files { position: absolute; bottom: 4px; left: -10px; z-index: 10; background: rgba(30, 80, 240, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 6px; letter-spacing: 0.5px; }
-
+    .folder-front::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent); }
+    .badge-files { position: absolute; bottom: 4px; left: -10px; z-index: 10; background: rgba(30,80,240,0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 6px; letter-spacing: 0.5px; }
 
     .text-details { display: flex; flex-direction: column; gap: 3px; }
-    .title { color: #ffffff; font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
+    .title { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
     .subtitle { color: #8888aa; font-size: 12px; font-weight: 500; }
 
-    /* Panneau de progression */
-    .progress-panel {
-      margin-top: 18px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: none; 
-      flex-direction: column;
-      gap: 12px;
+    /* ══ CROIX SUPPRESSION ══ */
+    .file-remove-btn {
+      position: absolute; top: 8px; right: 8px; z-index: 30;
+      width: auto; height: auto; background: none; border: none;
+      color: rgba(255,255,255,0.5); font-size: 18px; line-height: 1;
+      cursor: pointer; padding: 2px 4px; border-radius: 4px;
+      display: none; transition: color 0.2s, transform 0.2s;
     }
+    .file-remove-btn:hover { color: #ff6b6b; transform: scale(1.2) rotate(90deg); }
+
+    /* ══ APERÇU FICHIER ══ */
+    .file-preview { display: none; width: 48px; height: 48px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0; }
+    .file-preview-pdf { display: none; width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #1a3fcc, #2a5fff); align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+
+    /* ══ ERREUR FICHIER ══ */
+    .file-error-msg { display: none; color: #ff6b6b; font-size: 12px; font-weight: 600; margin-top: 8px; text-align: center; }
+
+    /* ══ BARRE DE PROGRESSION ══ */
+    .progress-panel { margin-top: 18px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 14px 16px; display: none; flex-direction: column; gap: 12px; }
     .progress-status-row { display: flex; justify-content: space-between; align-items: center; }
     .status-left { display: flex; align-items: center; gap: 10px; }
-    .spinner { width: 14px; height: 14px; border: 2px solid #ffffff; border-right-color: transparent; border-radius: 50%; animation: rotate 1s linear infinite; }
-    .status-text { color: #ffffff; font-size: 14px; }
-    .percentage { color: #ffffff; font-size: 18px; font-weight: 700; }
+    .spinner { width: 14px; height: 14px; border: 2px solid #fff; border-right-color: transparent; border-radius: 50%; animation: rotate 1s linear infinite; }
+    .status-text { color: #fff; font-size: 14px; }
+    .percentage { color: #fff; font-size: 18px; font-weight: 700; }
     .progress-bar-bg { width: 100%; height: 6px; background: #1a1a2e; border-radius: 10px; overflow: hidden; }
-    .progress-bar-fill {height: 100%;width: 0%;background: linear-gradient(90deg, #ffffff, #ccccee);border-radius: 10px;
-  /* On enlève la durée fixe ici pour la gérer en JS */
-  transition: width 0.5s ease-out; }
-    
+    .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #fff, #ccccee); border-radius: 10px; transition: width 0.5s ease-out; }
     @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    /* Bouton d'envoi EmailJS */
+    /* ══ BOUTON ENVOYER ══ */
     .btn-send {
       width: 100%; height: 3.2em; border-radius: 30em;
       font-size: 15px; font-family: 'Poppins', inherit; font-weight: 800;
       border: none; cursor: pointer; color: #fff;
       background: linear-gradient(135deg, #1a3fcc, #2a5fff);
-      box-shadow: 0 4px 16px rgba(26, 63, 204, 0.40);
-      margin-top: 16px; transition: all 0.2s; display: none;
+      box-shadow: 0 4px 16px rgba(26,63,204,0.40);
+      margin-top: 16px; transition: all 0.2s;
+      display: block;
     }
-    .btn-send:hover { box-shadow: 0 6px 20px rgba(26, 63, 204, 0.6); transform: translateY(-1px); }
+    .btn-send:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(26,63,204,0.6); transform: translateY(-1px); }
+    .btn-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
-    /* ══ LOADER (2× plus lent) ══ */
-    .loader-section { display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:48px; }
+    /* ══ FEEDBACK SUCCÈS ══ */
+    .success-overlay { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px 16px; text-align: center; }
+    .success-checkmark { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #1a3fcc, #2a5fff); display: flex; align-items: center; justify-content: center; font-size: 28px; animation: pop-in 0.4s cubic-bezier(0.175,0.885,0.32,2.2) both; }
+    .success-title { color: #fff; font-size: 18px; font-weight: 800; }
+    .success-sub { color: rgba(200,220,255,0.7); font-size: 13px; font-weight: 500; }
+    @keyframes pop-in { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    /* ══ LOADER ══ */
+    .loader-section { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; margin-top:48px; width:100%; }
     .loader-label { font-size:12px; font-weight:500; color:rgba(200,220,255,0.55); letter-spacing:0.5px; }
     .loader { --size:130px; --dur:4s; height:var(--size); aspect-ratio:1; position:relative; }
     .loader .box { position:absolute; background:linear-gradient(0deg,rgba(100,160,255,0.10) 0%,rgba(255,255,255,0.18) 100%); border-radius:50%; border-top:1px solid rgba(150,200,255,0.7); backdrop-filter:blur(4px); animation:ripple var(--dur) infinite ease-in-out; }
@@ -313,108 +227,6 @@
     .loader .logo img { width:100%; animation:logo-pulse var(--dur) infinite ease-in-out; }
     @keyframes ripple { 0%,100% { transform:scale(1); } 50% { transform:scale(1.3); } }
     @keyframes logo-pulse { 0%,100% { opacity:0.45; } 50% { opacity:1; } }
-
-    /* ══ FEEDBACK SUCCÈS ══ */
-    .success-overlay {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      padding: 24px 16px;
-      text-align: center;
-    }
-    .success-checkmark {
-      width: 64px; height: 64px; border-radius: 50%;
-      background: linear-gradient(135deg, #1a3fcc, #2a5fff);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
-      animation: pop-in 0.4s cubic-bezier(0.175,0.885,0.32,2.2) both;
-    }
-    .success-title { color: #fff; font-size: 18px; font-weight: 800; }
-    .success-sub { color: rgba(200,220,255,0.7); font-size: 13px; font-weight: 500; }
-    @keyframes pop-in {
-      0% { transform: scale(0); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* ══ FEEDBACK FICHIER TROP LOURD ══ */
-    .file-error-msg {
-      display: none; color: #ff6b6b; font-size: 12px;
-      font-weight: 600; margin-top: 8px; text-align: center;
-    }
-
-    /* ══ CROIX SANS ROND ══ */
-    .file-remove-btn {
-      position: absolute; top: 8px; right: 8px; z-index: 30;
-      width: auto; height: auto; background: none; border: none;
-      color: rgba(255,255,255,0.5); font-size: 18px; line-height: 1;
-      cursor: pointer; padding: 2px 4px; border-radius: 4px;
-      display: none; transition: color 0.2s, transform 0.2s;
-    }
-    .file-remove-btn:hover { color: #ff6b6b; transform: scale(1.2) rotate(90deg); }
-
-    /* ══ BOUTON ENVOYER GRISÉ ══ */
-    .btn-send:disabled {
-      opacity: 0.4; cursor: not-allowed;
-      transform: none !important; box-shadow: none !important;
-    }
-
-    /* ══ APERÇU FICHIER ══ */
-    .file-preview {
-      display: none; width: 48px; height: 48px; border-radius: 8px;
-      object-fit: cover; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;
-    }
-    .file-preview-pdf {
-      display: none; width: 48px; height: 48px; border-radius: 8px;
-      background: linear-gradient(135deg, #1a3fcc, #2a5fff);
-      align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
-    }
-
-    /* ══ DRAG & DROP BORDURE LUMINEUSE ══ */
-    @property --border-angle {
-      syntax: '<angle>'; inherits: false; initial-value: 0deg;
-    }
-    .file-trigger-zone.drag-over {
-      background: rgba(255,255,255,0.08); border: none;
-      --border-angle: 0deg; animation: border-spin 2s linear infinite;
-    }
-    .file-trigger-zone.drag-over::before {
-      content: ''; position: absolute; inset: -1.5px; border-radius: 17px; padding: 1.5px;
-      background: conic-gradient(from var(--border-angle), transparent 0%, transparent 60%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0.4) 80%, transparent 90%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: destination-out; mask-composite: exclude;
-      pointer-events: none; z-index: 25;
-    }
-    @keyframes border-spin { to { --border-angle: 360deg; } }
-    .file-trigger-zone.drag-over .drop-hint { display: block; }
-    .drop-hint {
-      display: none; position: absolute; inset: 0; border-radius: 16px;
-      background: rgba(42,95,255,0.08); z-index: 22; pointer-events: none;
-    }
-
-    /* ══ VALIDATION TEMPS RÉEL ══ */
-    .input-group input.input-error {
-      border-color: rgba(255, 80, 80, 0.8) !important;
-      background: rgba(255, 60, 60, 0.06) !important;
-    }
-    .input-group input.input-ok { border-color: rgba(42, 200, 120, 0.7) !important; }
-    .field-error-msg {
-      display: none; color: #ff6b6b; font-size: 11px;
-      font-weight: 500; margin-top: -12px; margin-bottom: 12px;
-    }
-
-    /* ══ TEXTAREA MESSAGE ══ */
-    .input-group textarea {
-      width: 100%; padding: 12px; border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.05); color: #fff;
-      font-family: 'Inter', sans-serif; font-size: 14px;
-      margin-bottom: 16px; transition: border 0.3s;
-      resize: vertical; min-height: 80px;
-    }
-    .input-group textarea:focus { outline: none; border-color: rgba(42, 95, 255, 0.8); }
-    .input-group textarea::placeholder { color: rgba(255,255,255,0.3); }
   </style>
 </head>
 <body>
@@ -438,9 +250,7 @@
       <div class="glass-content insta-inner">
         <img class="platform-icon" src="instagram-letter-white-logo-icon-ig-app-transparent-background-premium-social-media-design-for-digital-download-free-png.webp" alt="Instagram">
         <div class="card-label">Suivez-nous<br>sur Instagram !</div>
-        <button class="btn-platform btn-insta">
-          <span class="btn-text">S'abonner</span>
-        </button>
+        <button class="btn-platform btn-insta"><span class="btn-text">S'abonner</span></button>
       </div>
     </a>
 
@@ -449,30 +259,29 @@
       <div class="glass-content google-inner">
         <img class="platform-icon" src="google-logo.png" alt="Google">
         <div class="card-label">Nos avis<br>Google</div>
-        <button class="btn-platform btn-google-plat">
-          <span class="btn-text">Votre avis compte !</span>
-        </button>
+        <button class="btn-platform btn-google-plat"><span class="btn-text">Votre avis compte !</span></button>
       </div>
     </a>
 
     <div class="-container">
       <div id="form-content">
         <div style="color:#fff; font-weight:800; font-size:18px; margin-bottom:30px; text-align:center;">Envoyer votre ordonnance</div>
-        
+
         <div class="input-group">
           <label for="sender-name">Nom et Prénom :</label>
           <input type="text" id="sender-name" autocomplete="name" placeholder="Ex: DUPONT Jean">
           <div class="field-error-msg" id="name-error">Veuillez renseigner votre nom et prénom.</div>
+
           <label for="sender-phone">Téléphone — pour vous rappeler si besoin :</label>
           <input type="tel" id="sender-phone" autocomplete="tel" placeholder="06 12 34 56 78">
           <div class="field-error-msg" id="phone-error">Format invalide.</div>
+
           <label for="sender-message">Un message pour la pharmacie ? (optionnel)</label>
           <textarea id="sender-message" placeholder="Ex: Urgent, substitution acceptée..."></textarea>
         </div>
 
         <div class="file-trigger-zone" id="drop-zone">
           <button class="file-remove-btn" id="removeFileBtn" title="Supprimer le fichier">✕</button>
-          <div class="drop-hint"></div>
           <input type="file" id="fileInput" accept="image/*,application/pdf">
           <div class="file-info-row">
             <img class="file-preview" id="filePreviewImg" alt="Aperçu">
@@ -490,7 +299,6 @@
         </div>
         <div class="file-error-msg" id="file-error-msg">Fichier trop lourd (5 MB max). Veuillez en choisir un autre.</div>
 
-        <!-- Barre de progression -->
         <div id="progressPanel" class="progress-panel">
           <div class="progress-status-row">
             <div class="status-left">
@@ -507,7 +315,6 @@
         <button class="btn-send" id="btn-send" onclick="sendWithAttachment()" disabled>Envoyer à la pharmacie</button>
       </div>
 
-      <!-- Feedback succès -->
       <div class="success-overlay" id="success-overlay">
         <div class="success-checkmark">✓</div>
         <div class="success-title">Ordonnance envoyée !</div>
@@ -520,47 +327,75 @@
   <div class="loader-section">
     <div class="loader">
       <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
-      <div class="logo">
-        <img src="Logo-test-swiftlink.png" alt="Logo">
-      </div>
+      <div class="logo"><img src="Logo-test-swiftlink.png" alt="Logo"></div>
     </div>
     <span class="loader-label">Propulsé par Swift'Link</span>
   </div>
 
   <script>
-    const fileInput = document.getElementById('fileInput');
-    const Title = document.getElementById('Title');
-    const Subtitle = document.getElementById('Subtitle');
-    const progressPanel = document.getElementById('progressPanel');
-    const progressBarFill = document.getElementById('progressBarFill');
-    const percentageText = document.getElementById('percentage');
-    const statusText = document.getElementById('statusText');
-    const spinner = document.getElementById('spinner');
-    const btnSend = document.getElementById('btn-send');
-    const phoneInput = document.getElementById('sender-phone');
-    const nameInput = document.getElementById('sender-name');
-    const removeFileBtn = document.getElementById('removeFileBtn');
-    const filePreviewImg = document.getElementById('filePreviewImg');
-    const filePreviewPdf = document.getElementById('filePreviewPdf');
-    const folderIcon = document.getElementById('folderIcon');
-    const dropZone = document.getElementById('drop-zone');
-    const fileErrorMsg = document.getElementById('file-error-msg');
-    const nameError = document.getElementById('name-error');
-    const phoneError = document.getElementById('phone-error');
-    
-    let selectedFile = null;
+  const fileInput    = document.getElementById('fileInput');
+  const Title        = document.getElementById('Title');
+  const Subtitle     = document.getElementById('Subtitle');
+  const progressPanel= document.getElementById('progressPanel');
+  const progressBarFill = document.getElementById('progressBarFill');
+  const percentageText  = document.getElementById('percentage');
+  const statusText   = document.getElementById('statusText');
+  const spinner      = document.getElementById('spinner');
+  const btnSend      = document.getElementById('btn-send');
+  const phoneInput   = document.getElementById('sender-phone');
+  const nameInput    = document.getElementById('sender-name');
+  const removeFileBtn= document.getElementById('removeFileBtn');
+  const dropZone     = document.getElementById('drop-zone');
+  const filePreviewImg = document.getElementById('filePreviewImg');
+  const filePreviewPdf = document.getElementById('filePreviewPdf');
+  const folderIcon   = document.getElementById('folderIcon');
+  const fileErrorMsg = document.getElementById('file-error-msg');
+  const successOverlay = document.getElementById('success-overlay');
+  const formContent  = document.getElementById('form-content');
 
-    // ── VALIDATION TEMPS RÉEL NOM ──
-    nameInput.addEventListener('input', function() {
-      const val = this.value.trim();
-      if (val.length > 0) {
-        this.classList.add('input-ok'); this.classList.remove('input-error');
-        nameError.style.display = 'none';
-      }
-      updateSendBtn();
-    });
+  const MAX_SIZE_MB  = 5;
+  let selectedFile   = null;
 
-    // ── FORMATAGE & VALIDATION TÉLÉPHONE ──
+  // ── SONS ──
+  function playSound(type) {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if (type === 'success') {
+      osc.frequency.setValueAtTime(523, ctx.currentTime);
+      osc.frequency.setValueAtTime(659, ctx.currentTime + 0.12);
+      osc.frequency.setValueAtTime(784, ctx.currentTime + 0.24);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+      osc.start(); osc.stop(ctx.currentTime + 0.6);
+    } else if (type === 'error') {
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(); osc.stop(ctx.currentTime + 0.4);
+    }
+  }
+
+  // ── VALIDATION TEMPS RÉEL ──
+  nameInput.addEventListener('blur', () => validateName());
+  nameInput.addEventListener('input', () => validateName());
+
+  function validateName() {
+    const val = nameInput.value.trim();
+    const err = document.getElementById('name-error');
+    if (val.length < 2) {
+      nameInput.classList.add('input-error'); nameInput.classList.remove('input-ok');
+      err.style.display = 'block';
+    } else {
+      nameInput.classList.remove('input-error'); nameInput.classList.add('input-ok');
+      err.style.display = 'none';
+    }
+    updateSendBtn();
+  }
+
+  if (phoneInput) {
     phoneInput.addEventListener('input', function(e) {
       let raw = e.target.value;
       if (raw.startsWith('+33')) {
@@ -577,189 +412,195 @@
         if (digits.startsWith('0') && digits.length > 10) digits = digits.substring(0, 10);
         e.target.value = digits.replace(/(\d{2})(?=\d)/g, '$1 ');
       }
-      updateSendBtn();
+      validatePhone();
     });
+    phoneInput.addEventListener('blur', validatePhone);
+  }
 
-    // ── ACTIVER LE BOUTON ENVOYER ──
-    function updateSendBtn() {
-      const hasName = nameInput.value.trim().length > 0;
-      const hasFile = selectedFile !== null;
-      btnSend.disabled = !(hasName && hasFile);
+  function validatePhone() {
+    const val = phoneInput.value.trim().replace(/\s+/g, '');
+    const err = document.getElementById('phone-error');
+    if (val.length === 0) {
+      phoneInput.classList.remove('input-error', 'input-ok');
+      err.style.display = 'none'; return;
     }
+    let ok = false;
+    if (val.startsWith('0')) ok = val.length === 10 && /^\d+$/.test(val);
+    else if (val.startsWith('+33')) ok = val.replace(/^\+33/, '').replace(/\D/g,'').length === 9;
+    else ok = /^\d+$/.test(val) && val.length >= 7;
+    phoneInput.classList.toggle('input-error', !ok);
+    phoneInput.classList.toggle('input-ok', ok);
+    err.style.display = ok ? 'none' : 'block';
+  }
 
-    // ── GESTION FICHIER ──
-    function handleFile(file) {
-      const maxSize = 5 * 1024 * 1024;
-      if (file.size > maxSize) {
-        fileErrorMsg.style.display = 'block';
-        fileInput.value = '';
-        selectedFile = null;
-        updateSendBtn();
-        return;
-      }
-      fileErrorMsg.style.display = 'none';
-      selectedFile = file;
+  function updateSendBtn() {
+    btnSend.disabled = !(selectedFile && nameInput.value.trim().length >= 2);
+  }
 
-      // Aperçu
-      folderIcon.style.display = 'none';
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = e => { filePreviewImg.src = e.target.result; };
-        reader.readAsDataURL(file);
-        filePreviewImg.style.display = 'block';
-        filePreviewPdf.style.display = 'none';
-      } else {
-        filePreviewImg.style.display = 'none';
-        filePreviewPdf.style.display = 'flex';
-      }
+  // ── DRAG & DROP ──
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  });
 
-      Title.innerText = file.name;
-      Subtitle.innerText = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
-      removeFileBtn.style.display = 'flex';
-      progressPanel.style.display = 'flex';
-      spinner.style.display = 'block';
-      startSatisfyingLoading();
-      updateSendBtn();
+  // ── SÉLECTION FICHIER ──
+  fileInput.addEventListener('change', function(e) {
+    handleFile(e.target.files[0]);
+  });
+
+  function handleFile(file) {
+    const sizeMB = file.size / (1024 * 1024);
+    if (sizeMB > MAX_SIZE_MB) {
+      playSound('error');
+      fileErrorMsg.style.display = 'block';
+      return;
     }
+    fileErrorMsg.style.display = 'none';
+    selectedFile = file;
 
-    fileInput.addEventListener('change', function(e) {
-      if (e.target.files[0]) handleFile(e.target.files[0]);
-    });
+    Title.innerText = file.name;
+    Subtitle.innerText = sizeMB.toFixed(2) + ' MB';
+    removeFileBtn.style.display = 'block';
 
-    // ── DRAG & DROP ──
-    dropZone.addEventListener('dragover', function(e) {
-      e.preventDefault(); this.classList.add('drag-over');
-    });
-    dropZone.addEventListener('dragleave', function() {
-      this.classList.remove('drag-over');
-    });
-    dropZone.addEventListener('drop', function(e) {
-      e.preventDefault(); this.classList.remove('drag-over');
-      const file = e.dataTransfer.files[0];
-      if (file) handleFile(file);
-    });
-
-    // ── SUPPRIMER FICHIER ──
-    removeFileBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      selectedFile = null;
-      fileInput.value = '';
-      Title.innerText = 'Déposez votre ordonnance ici';
-      Subtitle.innerText = 'JPG, PNG ou PDF · 5 MB max';
-      removeFileBtn.style.display = 'none';
+    const isPdf = file.type === 'application/pdf';
+    folderIcon.style.display = 'none';
+    if (isPdf) {
       filePreviewImg.style.display = 'none';
+      filePreviewPdf.style.display = 'flex';
+    } else {
       filePreviewPdf.style.display = 'none';
-      folderIcon.style.display = 'block';
-      progressPanel.style.display = 'none';
-      progressBarFill.style.width = '0%';
-      spinner.style.display = 'block';
-      fileErrorMsg.style.display = 'none';
-      updateSendBtn();
-    });
-
-    // ── ANIMATION BARRE DE PROGRESSION ──
-    function startSatisfyingLoading() {
-      const bar = progressBarFill;
-      bar.style.transition = 'none';
-      bar.style.width = '0%';
-      percentageText.innerText = '0%';
-      statusText.innerText = 'Préparation...';
-
-      function animatePercent(from, to, duration, onDone) {
-        const start = performance.now();
-        function step(now) {
-          const progress = Math.min((now - start) / duration, 1);
-          percentageText.innerText = Math.round(from + (to - from) * progress) + '%';
-          if (progress < 1) requestAnimationFrame(step);
-          else if (onDone) onDone();
-        }
-        requestAnimationFrame(step);
-      }
-
-      requestAnimationFrame(() => {
-        bar.style.transition = 'width 0.5s ease-out';
-        bar.style.width = '50%';
-        statusText.innerText = 'Téléchargement...';
-        animatePercent(0, 50, 500);
-      });
-      setTimeout(() => {
-        bar.style.transition = 'width 2.5s ease-in-out';
-        bar.style.width = '75%';
-        animatePercent(50, 75, 2500);
-      }, 500);
-      setTimeout(() => {
-        bar.style.transition = 'width 0.4s ease-in';
-        bar.style.width = '100%';
-        statusText.innerText = 'Fichier prêt !';
-        animatePercent(75, 100, 400, () => { if (spinner) spinner.style.display = 'none'; });
-      }, 3000);
-    }
-
-    // ── ENVOI EMAILJS ──
-    function sendWithAttachment() {
-      const senderName = nameInput ? nameInput.value.trim() : '';
-      const senderPhone = phoneInput ? phoneInput.value.trim().replace(/\s+/g, '') : '';
-      const senderMessage = document.getElementById('sender-message') ? document.getElementById('sender-message').value.trim() : '';
-
-      if (!senderName) {
-        nameInput.classList.add('input-error');
-        nameError.style.display = 'block';
-        nameInput.focus();
-        return;
-      }
-      if (senderPhone.length > 0) {
-        let valid = true;
-        if (senderPhone.startsWith('0')) {
-          if (senderPhone.length !== 10 || !/^\d+$/.test(senderPhone)) valid = false;
-        } else if (senderPhone.startsWith('+33')) {
-          if (senderPhone.replace(/^\+33/, '').replace(/\D/g, '').length !== 9) valid = false;
-        } else if (!/^\d+$/.test(senderPhone) || senderPhone.length < 7) {
-          valid = false;
-        }
-        if (!valid) {
-          phoneInput.classList.add('input-error');
-          phoneError.style.display = 'block';
-          phoneInput.focus();
-          return;
-        }
-      }
-      if (!selectedFile) return;
-
-      btnSend.textContent = 'Envoi en cours...';
-      btnSend.disabled = true;
-
+      filePreviewImg.style.display = 'block';
       const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onload = function() {
-        const templateParams = {
-          name_sender: senderName,
-          phone_sender: senderPhone,
-          message_sender: senderMessage,
-          file_name: selectedFile.name,
-          my_file: reader.result
-        };
-
-        emailjs.send('service_3svkyii', 'template_hlj4f0g', templateParams)
-          .then(function() {
-            // Feedback succès
-            document.getElementById('form-content').style.display = 'none';
-            const overlay = document.getElementById('success-overlay');
-            overlay.style.display = 'flex';
-          }, function(error) {
-            console.error('Échec EmailJS :', error);
-            alert('Erreur lors de l\'envoi. Veuillez réessayer.');
-            btnSend.textContent = 'Envoyer à la pharmacie';
-            btnSend.disabled = false;
-          });
-      };
-      reader.onerror = function() {
-        alert('Impossible de lire le fichier.');
-        btnSend.textContent = 'Envoyer à la pharmacie';
-        btnSend.disabled = false;
-      };
+      reader.onload = (ev) => { filePreviewImg.src = ev.target.result; };
+      reader.readAsDataURL(file);
     }
+
+    progressPanel.style.display = 'flex';
+    spinner.style.display = 'block';
+    updateSendBtn();
+    startSatisfyingLoading();
+  }
+
+  // ── SUPPRESSION FICHIER ──
+  removeFileBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    selectedFile = null;
+    fileInput.value = '';
+    Title.innerText = 'Déposez votre ordonnance ici';
+    Subtitle.innerText = 'JPG, PNG ou PDF · 5 MB max';
+    removeFileBtn.style.display = 'none';
+    filePreviewImg.style.display = 'none';
+    filePreviewPdf.style.display = 'none';
+    folderIcon.style.display = 'block';
+    progressPanel.style.display = 'none';
+    progressBarFill.style.width = '0%';
+    spinner.style.display = 'block';
+    fileErrorMsg.style.display = 'none';
+    updateSendBtn();
+  });
+
+  // ── BARRE DE PROGRESSION ──
+  function startSatisfyingLoading() {
+    const bar = progressBarFill;
+    bar.style.transition = "none";
+    bar.style.width = "0%";
+    percentageText.innerText = "0%";
+    statusText.innerText = "Préparation...";
+
+    function animatePercent(from, to, duration, onDone) {
+      const start = performance.now();
+      function step(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const value = Math.round(from + (to - from) * progress);
+        percentageText.innerText = value + "%";
+        if (progress < 1) requestAnimationFrame(step);
+        else if (onDone) onDone();
+      }
+      requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(() => {
+      bar.style.transition = "width 0.5s ease-out";
+      bar.style.width = "50%";
+      statusText.innerText = "Téléchargement...";
+      animatePercent(0, 50, 500);
+    });
+    setTimeout(() => {
+      bar.style.transition = "width 2.5s ease-in-out";
+      bar.style.width = "75%";
+      animatePercent(50, 75, 2500);
+    }, 500);
+    setTimeout(() => {
+      bar.style.transition = "width 0.4s ease-in";
+      bar.style.width = "100%";
+      statusText.innerText = "Fichier prêt !";
+      animatePercent(75, 100, 400, () => {
+        if (spinner) spinner.style.display = 'none';
+      });
+    }, 3000);
+  }
+
+  // ── ENVOI ──
+  function sendWithAttachment() {
+    const senderName    = nameInput ? nameInput.value.trim() : "";
+    const senderPhone   = phoneInput ? phoneInput.value.trim().replace(/\s+/g, '') : "";
+    const senderMessage = document.getElementById('sender-message') ? document.getElementById('sender-message').value.trim() : "";
+
+    if (!senderName) {
+      nameInput.classList.add('input-error');
+      document.getElementById('name-error').style.display = 'block';
+      nameInput.focus(); return;
+    }
+    if (!selectedFile) {
+      fileErrorMsg.innerText = "Veuillez sélectionner un fichier.";
+      fileErrorMsg.style.display = 'block'; return;
+    }
+
+    btnSend.textContent = "Envoi en cours...";
+    btnSend.style.opacity = "0.6";
+    btnSend.disabled = true;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onload = function () {
+      const templateParams = {
+        name_sender:    senderName,
+        phone_sender:   senderPhone || "Non renseigné",
+        message_sender: senderMessage || "Aucun message",
+        file_name:      selectedFile.name,
+        my_file:        reader.result,
+        sent_at:        new Date().toLocaleString('fr-FR')
+      };
+
+      emailjs.send('service_3svkyii', 'template_hlj4f0g', templateParams)
+        .then(function() {
+          playSound('success');
+          formContent.style.display = 'none';
+          successOverlay.style.display = 'flex';
+        }, function(error) {
+          console.error("Échec EmailJS :", error);
+          playSound('error');
+          alert("Erreur lors de l'envoi. Veuillez réessayer.");
+          btnSend.textContent = "Envoyer à la pharmacie";
+          btnSend.style.opacity = "1";
+          btnSend.disabled = false;
+        });
+    };
+    reader.onerror = function() {
+      alert("Impossible de lire le fichier.");
+      btnSend.textContent = "Envoyer à la pharmacie";
+      btnSend.style.opacity = "1";
+      btnSend.disabled = false;
+    };
+  }
   </script>
-    
 
 </body>
 </html>
