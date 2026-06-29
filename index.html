@@ -436,14 +436,26 @@ const removeFileBtn = document.getElementById('removeFileBtn');
 
 fileInput.addEventListener('change', function(e) {
   selectedFile = e.target.files[0];
+
+  
   if (selectedFile) {
+    // --- 🚨 NOUVELLE VÉRIFICATION DE LA TAILLE (Max 2 Mo) 🚨 ---
+        const maxSizeInBytes = 2 * 1024 * 1024; // 2 Mo en octets
+        if (selectedFile.size > maxSizeInBytes) {
+          alert("Erreur : Le fichier est trop volumineux. La taille maximum autorisée est de 2 Mo.");
+          
+          // On vide la sélection pour empêcher l'envoi
+          fileInput.value = "";
+          selectedFile = null;
+          return; // On arrête le code ici, la barre de chargement ne se lancera pas
+        } else {
     Title.innerText = selectedFile.name;
     Subtitle.innerText = (selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
     removeFileBtn.style.display = 'flex';
     progressPanel.style.display = 'flex';
     btnSend.style.display = 'block';
     spinner.style.display = 'block';
-    startSatisfyingLoading();
+    startSatisfyingLoading();}
   }
 });
 
