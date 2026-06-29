@@ -176,6 +176,12 @@
     .text-details { display: flex; flex-direction: column; gap: 3px; }
     .title { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
     .subtitle { color: #8888aa; font-size: 12px; font-weight: 500; }
+    /* ══ FICHIER PRET ══ */
+    .file-trigger-zone.file-ready {
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+  transition: border 0.4s ease, box-shadow 0.4s ease;
+}
 
     /* ══ CROIX SUPPRESSION ══ */
     .file-remove-btn {
@@ -482,6 +488,7 @@
     }
     fileErrorMsg.style.display = 'none';
     selectedFile = file;
+    dropZone.classList.add('file-ready');
 
     Title.innerText = file.name;
     Subtitle.innerText = sizeMB.toFixed(2) + ' MB';
@@ -510,6 +517,7 @@
   removeFileBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     selectedFile = null;
+    dropZone.classList.remove('file-ready');
     fileInput.value = '';
     Title.innerText = 'Déposez votre ordonnance ici';
     Subtitle.innerText = 'JPG, PNG ou PDF · 5 MB max';
