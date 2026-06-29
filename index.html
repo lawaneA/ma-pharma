@@ -484,6 +484,9 @@
   const nameInput = document.getElementById('sender-name');
   const senderName = nameInput ? nameInput.value.trim() : "";
 
+  const emailInput = document.getElementById('sender-email');
+  const senderEmail = emailInput ? emailInput.value.trim() : "";
+
   // 2. Vérifications de sécurité (Fichier + Nom)
   if (!senderName) {
     alert("Veuillez renseigner votre Nom et Prénom avant d'envoyer.");
@@ -512,7 +515,8 @@
     const templateParams = {
       name_sender: senderName,      // <-- Remplira {{name_sender}} sur EmailJS
       file_name: selectedFile.name,  // <-- Remplira {{file_name}}
-      my_file: base64File            // <-- Remplira la pièce jointe
+      my_file: base64File,            // <-- Remplira la pièce jointe
+      email_sender: senderEmail     // <-- AJOUT : Remplira {{email_sender}} sur EmailJS
     };
 
     // 6. Envoi officiel à l'API
@@ -523,7 +527,8 @@
          
          // On vide le fichier ET le champ texte après succès
          clearFile(); 
-         if(nameInput) nameInput.value = ""; 
+         if(nameInput) nameInput.value = "";
+         if(emailInput) emailInput.value = "";
       }, function(error) {
          console.error("Échec EmailJS :", error);
          alert("Erreur lors de l'envoi. Veuillez réessayer.");
