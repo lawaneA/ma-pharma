@@ -36,19 +36,16 @@
       display: flex; flex-direction: column; align-items: center;
       padding: 32px 16px 64px;
       
-      /* 1. Couleur bleu nuit profond pour que les bords sur PC se fondent parfaitement avec l'image */
-      background-color: #020b1f; 
-      
-      /* 2. On charge ta nouvelle image ! */
+      /* 1. On charge ton image */
       background-image: url('bg-blue.jpg'); 
       
-      /* 3. On centre l'image et on l'empêche de se répéter */
-      background-position: center top;
+      /* 2. On la centre parfaitement */
+      background-position: center center;
       background-repeat: no-repeat;
       background-attachment: fixed;
       
-      /* 4. On fixe la largeur à la taille d'un téléphone (480px max) */
-      background-size: 480px 100%; 
+      /* 3. L'image s'ajuste et remplit TOUT l'écran automatiquement (PC et Mobile) */
+      background-size: cover; 
     }
     @keyframes bg-move {
       from { background-position:center center; }
