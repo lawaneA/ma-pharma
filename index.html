@@ -6,7 +6,13 @@
   <title>Swift'Link</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
+ <!-- 1. CHARGEMENT D'EMAILJS -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+     (function(){
+        emailjs.init("Apzn8FzYNZlXAQTs-");
+     })();
+  </script>
   
 
   <svg style="position:absolute;width:0;height:0;" xmlns="http://www.w3.org/2000/svg">
@@ -484,97 +490,76 @@
       if (e.dataTransfer.files[0]) showFile(e.dataTransfer.files[0]);
     });
 
-// ── Envoi ultra-simplifié via FormSubmit (AVEC fichier) ──
-function sendWithAttachment() {
-  const nameInput = document.getElementById('sender-name');
-  const emailInput = document.getElementById('sender-email');
+// 3. FONCTION D'ENVOI RETOUR SUR EMAILJS (Abonnement Premium)
+    function sendWithAttachment() {
+      const nameInput = document.getElementById('sender-name');
+      const emailInput = document.getElementById('sender-email');
+      
+      const senderName = nameInput ? nameInput.value.trim() : "";
+      const senderEmail = emailInput ? emailInput.value.trim() : "";
 
-  const senderName = nameInput ? nameInput.value.trim() : "";
-  const senderEmail = emailInput ? emailInput.value.trim() : "";
+      if (!senderName) {
+        alert("Veuillez renseigner votre Nom et Prénom avant d'envoyer.");
+        if(nameInput) nameInput.focus();
+        return;
+      }
 
-  // 1. Vérifications de sécurité
-  if (!senderName) {
-    alert("Veuillez renseigner votre Nom et Prénom avant d'envoyer.");
-    if(nameInput) nameInput.focus();
-    return;
-  }
+      if (!selectedFile) {
+        alert("Veuillez d'abord sélectionner un fichier.");
+        return;
+      }
 
-  if (!selectedFile) {
-    alert("Veuillez d'abord sélectionner un fichier.");
-    return;
-  }
+      // Animation du bouton pendant le chargement
+      btnSend.textContent = "Envoi en cours...";
+      btnSend.style.opacity = "0.6";
+      btnSend.disabled = true;
 
-  // 2. Animation du bouton
-  btnSend.textContent = "Envoi en cours...";
-  btnSend.style.opacity = "0.6";
-  btnSend.disabled = true;
+      // Lecture du fichier pour EmailJS
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
 
-  // 3. Création d'une fenêtre invisible pour envoyer sans recharger la page
-  let iframe = document.getElementById('hidden_iframe');
-  if (!iframe) {
-    iframe = document.createElement('iframe');
-    iframe.name = 'hidden_iframe';
-    iframe.id = 'hidden_iframe';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-  }
+      reader.onload = function () {
+        const base64File = reader.result;
 
-  // 4. Création d'un formulaire classique virtuel
-  const form = document.createElement('form');
-  form.method = 'POST';
-  // ⚠️ N'OUBLIE PAS DE METTRE TON ADRESSE MAIL CI-DESSOUS ⚠️
-  form.action = 'https://formsubmit.co/fouedpharma@gmail.com'; 
-  form.enctype = 'multipart/form-data'; // Indispensable pour les pièces jointes
-  form.target = 'hidden_iframe'; // Dirige l'envoi vers la fenêtre invisible
+        // Préparation des variables pour ton template EmailJS
+        const templateParams = {
+          name_sender: senderName,
+          email_sender: senderEmail,
+          file_name: selectedFile.name,
+          my_file: base64File // Relié à {{my_file}} dans ton Dynamic Attachment
+        };
 
-  // 5. Ajout des informations textuelles
-  const fields = {
-    "Nom_du_patient": senderName,
-    "Email_du_patient": senderEmail,
-    "_captcha": "false",
-    "_template": "table"
-  };
+        // Envoi officiel via EmailJS
+        emailjs.send('service_3svkyii', 'template_hlj4f0g', templateParams)
+          .then(function(response) {
+             alert("Succès ! L'ordonnance de " + senderName + " a bien été envoyée.");
+             
+             // Remise à zéro
+             clearFile(); 
+             if(nameInput) nameInput.value = "";
+             if(emailInput) emailInput.value = "";
+          }, function(error) {
+             console.error("Échec EmailJS :", error);
+             alert("Erreur lors de l'envoi. Veuillez réessayer.");
+          })
+          .finally(() => {
+             // Remise à zéro du bouton
+             btnSend.textContent = "Envoyer par mail";
+             btnSend.style.opacity = "1";
+             btnSend.disabled = false;
+             if (selectedFile) btnSend.classList.add('ready');
+          });
+      };
 
-  for (const key in fields) {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
-    input.value = fields[key];
-    form.appendChild(input);
-  }
-
-  // 6. Ajout de la véritable pièce jointe
-  const fileInputHidden = document.createElement('input');
-  fileInputHidden.type = 'file';
-  fileInputHidden.name = 'Ordonnance'; // C'est le nom du fichier dans ton mail
-  
-  // Astuce JS pour cloner le fichier sélectionné
-  const dataTransfer = new DataTransfer();
-  dataTransfer.items.add(selectedFile);
-  fileInputHidden.files = dataTransfer.files;
-  form.appendChild(fileInputHidden);
-
-  document.body.appendChild(form);
-
-  // 7. Ce qu'il se passe quand l'envoi est terminé
-  iframe.onload = function() {
-    alert("Succès ! L'ordonnance a bien été envoyée avec sa pièce jointe.");
-    
-    // Nettoyage après succès
-    clearFile(); 
-    if(nameInput) nameInput.value = "";
-    if(emailInput) emailInput.value = "";
-    
-    btnSend.textContent = "Envoyer par mail";
-    btnSend.style.opacity = "1";
-    btnSend.disabled = false;
-    
-    form.remove(); // On supprime le formulaire virtuel
-  };
-
-  // 8. On clique sur le bouton "Envoyer" de notre formulaire invisible
-  form.submit();
-}
+      reader.onerror = function (error) {
+        console.error("Erreur de lecture :", error);
+        alert("Impossible de lire le fichier.");
+        
+        btnSend.textContent = "Envoyer par mail";
+        btnSend.style.opacity = "1";
+        btnSend.disabled = false;
+      };
+    }
     
   </script>
 
