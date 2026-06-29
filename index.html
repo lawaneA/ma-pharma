@@ -288,16 +288,17 @@
     </a>
 
     <div class="upload-container">
+      <div style="color:#fff; font-weight:800; font-size:18px; margin-bottom:15px; text-align:center;">Envoyer votre ordonnance</div>
       
       <div class="input-group">
         <label for="sender-name">Nom et Prénom :</label>
         <input type="text" id="sender-name" placeholder="Ex: DUPONT Jean">
         
-        <label for="sender-email">Email (Optionnel) :</label>
-        <input type="email" id="sender-email" placeholder="Pour le suivi de la commande">
+        <label for="sender-phone">Téléphone (Optionnel) :</label>
+        <input type="tel" id="sender-phone" placeholder="06 12 34 56 78">
       </div>
 
-      <div class="file-trigger-zone">
+      <div class="file-trigger-zone" id="drop-zone">
         <input type="file" id="fileInput" accept="image/*,application/pdf">
         <div class="file-info-row">
           <div class="folder-icon-container">
@@ -309,9 +310,12 @@
             <div id="uploadTitle" class="title">Ajouter un document</div>
             <div id="uploadSubtitle" class="subtitle">Sélectionnez votre ordonnance</div>
           </div>
+         <!-- Bouton PLUS pour ajouter un 2ème fichier -->
+          <div id="add-more-btn" style="display:none; margin-left:auto; background:rgba(255,255,255,0.1); width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff;">+</div>
         </div>
       </div>
-
+      
+      <!-- Barre de progression -->
       <div id="progressPanel" class="progress-panel">
         <div class="progress-status-row">
           <div class="status-left">
@@ -377,19 +381,19 @@
     // Fonction d'envoi EmailJS
     function sendWithAttachment() {
       const nameInput = document.getElementById('sender-name');
-      const emailInput = document.getElementById('sender-email');
+      const phoneInput = document.getElementById('sender-phone');
       
       const senderName = nameInput ? nameInput.value.trim() : "";
-      const senderEmail = emailInput ? emailInput.value.trim() : "";
+      const senderPhone = phoneInput ? phoneInput.value.trim() : "";
 
       if (!senderName) {
-        alert("Veuillez renseigner votre Nom et Prénom avant d'envoyer.");
+        alert("Veuillez renseigner votre Nom et Prénom.");
         if(nameInput) nameInput.focus();
         return;
       }
 
       if (!selectedFile) {
-        alert("Veuillez d'abord sélectionner un fichier.");
+        alert("Veuillez sélectionner un fichier.");
         return;
       }
 
@@ -406,7 +410,7 @@
 
         const templateParams = {
           name_sender: senderName,
-          email_sender: senderEmail,
+          phone_sender: senderPhone,
           file_name: selectedFile.name,
           my_file: base64File
         };
@@ -420,7 +424,7 @@
              selectedFile = null;
              fileInput.value = "";
              if(nameInput) nameInput.value = "";
-             if(emailInput) emailInput.value = "";
+             if(phoneInput) phoneInput.value = "";
              
              uploadTitle.innerText = "Ajouter un document";
              uploadSubtitle.innerText = "Sélectionnez votre ordonnance";
