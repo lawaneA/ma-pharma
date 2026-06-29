@@ -378,10 +378,17 @@
     const btnSend = document.getElementById('btn-send');
     
     let selectedFile = null;
+  
+    // Crée un input file invisible et le déclenche au clic sur le bouton
+   const fileInput = document.createElement('input');
+   fileInput.type = 'file';
+   fileInput.accept = 'image/*,application/pdf';
+   document.body.appendChild(fileInput);
 
     // Quand un fichier est sélectionné
     fileInput.addEventListener('change', function(e) {
       selectedFile = e.target.files[0];
+      
       if (selectedFile) {
         uploadTitle.innerText = selectedFile.name;
         uploadSubtitle.innerText = (selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
@@ -414,10 +421,16 @@
         return;
       }
 
-      if (!selectedFile) {
-        alert("Veuillez sélectionner un fichier.");
-        return;
-      }
+     if (!selectedFile) {
+      // Ouvre le sélecteur de fichier si rien n'est encore sélectionné
+      fileInput.click();
+      fileInput.addEventListener('change', function onFile(e) {
+        fileInput.removeEventListener('change', onFile);
+        selectedFile = e.target.files[0];
+        if (selectedFile) sendWithAttachment();
+      });
+      return;
+    }
 
       // Animation du bouton pendant l'envoi
       btnSend.textContent = "Envoi en cours...";
