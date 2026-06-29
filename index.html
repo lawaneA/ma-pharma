@@ -30,22 +30,30 @@
       --lg-hi: rgba(255,255,255,0.70);
     }
     * { margin:0; padding:0; box-sizing:border-box; }
-   body {
+  body {
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex; flex-direction: column; align-items: center;
       padding: 32px 16px 64px;
       
-      /* 1. On charge ton image */
-      background-image: url('bg-blue.jpg'); 
+      /* 1. Couleur bleu nuit très sombre pour masquer les côtés vides sur PC */
+      background-color: #030a1c; 
       
-      /* 2. On la centre parfaitement */
-      background-position: center center;
+      /* 2. On charge ton image */
+      background-image: url('bg-blue.jpg'); 
       background-repeat: no-repeat;
       background-attachment: fixed;
+      background-position: center top;
       
-      /* 3. L'image s'ajuste et remplit TOUT l'écran automatiquement (PC et Mobile) */
+      /* 3. SUR MOBILE : L'image s'adapte et remplit l'écran du téléphone */
       background-size: cover; 
+    }
+
+    /* 4. SUR PC (Écrans larges) : On force l'image à garder sa taille "téléphone" dézoomée */
+    @media (min-width: 481px) {
+      body {
+        background-size: 480px 100vh; 
+      }
     }
     @keyframes bg-move {
       from { background-position:center center; }
