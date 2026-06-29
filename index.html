@@ -313,6 +313,108 @@
     .loader .logo img { width:100%; animation:logo-pulse var(--dur) infinite ease-in-out; }
     @keyframes ripple { 0%,100% { transform:scale(1); } 50% { transform:scale(1.3); } }
     @keyframes logo-pulse { 0%,100% { opacity:0.45; } 50% { opacity:1; } }
+
+    /* ══ FEEDBACK SUCCÈS ══ */
+    .success-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px 16px;
+      text-align: center;
+    }
+    .success-checkmark {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, #1a3fcc, #2a5fff);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      animation: pop-in 0.4s cubic-bezier(0.175,0.885,0.32,2.2) both;
+    }
+    .success-title { color: #fff; font-size: 18px; font-weight: 800; }
+    .success-sub { color: rgba(200,220,255,0.7); font-size: 13px; font-weight: 500; }
+    @keyframes pop-in {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ══ FEEDBACK FICHIER TROP LOURD ══ */
+    .file-error-msg {
+      display: none; color: #ff6b6b; font-size: 12px;
+      font-weight: 600; margin-top: 8px; text-align: center;
+    }
+
+    /* ══ CROIX SANS ROND ══ */
+    .file-remove-btn {
+      position: absolute; top: 8px; right: 8px; z-index: 30;
+      width: auto; height: auto; background: none; border: none;
+      color: rgba(255,255,255,0.5); font-size: 18px; line-height: 1;
+      cursor: pointer; padding: 2px 4px; border-radius: 4px;
+      display: none; transition: color 0.2s, transform 0.2s;
+    }
+    .file-remove-btn:hover { color: #ff6b6b; transform: scale(1.2) rotate(90deg); }
+
+    /* ══ BOUTON ENVOYER GRISÉ ══ */
+    .btn-send:disabled {
+      opacity: 0.4; cursor: not-allowed;
+      transform: none !important; box-shadow: none !important;
+    }
+
+    /* ══ APERÇU FICHIER ══ */
+    .file-preview {
+      display: none; width: 48px; height: 48px; border-radius: 8px;
+      object-fit: cover; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;
+    }
+    .file-preview-pdf {
+      display: none; width: 48px; height: 48px; border-radius: 8px;
+      background: linear-gradient(135deg, #1a3fcc, #2a5fff);
+      align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+
+    /* ══ DRAG & DROP BORDURE LUMINEUSE ══ */
+    @property --border-angle {
+      syntax: '<angle>'; inherits: false; initial-value: 0deg;
+    }
+    .file-trigger-zone.drag-over {
+      background: rgba(255,255,255,0.08); border: none;
+      --border-angle: 0deg; animation: border-spin 2s linear infinite;
+    }
+    .file-trigger-zone.drag-over::before {
+      content: ''; position: absolute; inset: -1.5px; border-radius: 17px; padding: 1.5px;
+      background: conic-gradient(from var(--border-angle), transparent 0%, transparent 60%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0.4) 80%, transparent 90%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out; mask-composite: exclude;
+      pointer-events: none; z-index: 25;
+    }
+    @keyframes border-spin { to { --border-angle: 360deg; } }
+    .file-trigger-zone.drag-over .drop-hint { display: block; }
+    .drop-hint {
+      display: none; position: absolute; inset: 0; border-radius: 16px;
+      background: rgba(42,95,255,0.08); z-index: 22; pointer-events: none;
+    }
+
+    /* ══ VALIDATION TEMPS RÉEL ══ */
+    .input-group input.input-error {
+      border-color: rgba(255, 80, 80, 0.8) !important;
+      background: rgba(255, 60, 60, 0.06) !important;
+    }
+    .input-group input.input-ok { border-color: rgba(42, 200, 120, 0.7) !important; }
+    .field-error-msg {
+      display: none; color: #ff6b6b; font-size: 11px;
+      font-weight: 500; margin-top: -12px; margin-bottom: 12px;
+    }
+
+    /* ══ TEXTAREA MESSAGE ══ */
+    .input-group textarea {
+      width: 100%; padding: 12px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05); color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      margin-bottom: 16px; transition: border 0.3s;
+      resize: vertical; min-height: 80px;
+    }
+    .input-group textarea:focus { outline: none; border-color: rgba(42, 95, 255, 0.8); }
+    .input-group textarea::placeholder { color: rgba(255,255,255,0.3); }
   </style>
 </head>
 <body>
@@ -354,48 +456,63 @@
     </a>
 
     <div class="-container">
-      <div style="color:#fff; font-weight:800; font-size:18px; margin-bottom:30px; text-align:center;">Envoyer votre ordonnance</div>
-      
-      <div class="input-group">
-        <label for="sender-name">Votre nom complet :</label>
-        <input type="text" id="sender-name" autocomplete="name" placeholder="Ex: DUPONT Jean">
+      <div id="form-content">
+        <div style="color:#fff; font-weight:800; font-size:18px; margin-bottom:30px; text-align:center;">Envoyer votre ordonnance</div>
         
-        <label for="sender-phone">Téléphone — pour vous rappeler si besoin :</label>
-        <input type="tel" id="sender-phone" autocomplete="tel" placeholder="06 12 34 56 78">
+        <div class="input-group">
+          <label for="sender-name">Nom et Prénom :</label>
+          <input type="text" id="sender-name" autocomplete="name" placeholder="Ex: DUPONT Jean">
+          <div class="field-error-msg" id="name-error">Veuillez renseigner votre nom et prénom.</div>
+          <label for="sender-phone">Téléphone — pour vous rappeler si besoin :</label>
+          <input type="tel" id="sender-phone" autocomplete="tel" placeholder="06 12 34 56 78">
+          <div class="field-error-msg" id="phone-error">Format invalide.</div>
+          <label for="sender-message">Un message pour la pharmacie ? (optionnel)</label>
+          <textarea id="sender-message" placeholder="Ex: Urgent, substitution acceptée..."></textarea>
+        </div>
+
+        <div class="file-trigger-zone" id="drop-zone">
+          <button class="file-remove-btn" id="removeFileBtn" title="Supprimer le fichier">✕</button>
+          <div class="drop-hint"></div>
+          <input type="file" id="fileInput" accept="image/*,application/pdf">
+          <div class="file-info-row">
+            <img class="file-preview" id="filePreviewImg" alt="Aperçu">
+            <div class="file-preview-pdf" id="filePreviewPdf">📄</div>
+            <div class="folder-icon-container" id="folderIcon">
+              <div class="folder-back"></div>
+              <div class="folder-front"></div>
+              <div class="badge-files">FILES</div>
+            </div>
+            <div class="text-details">
+              <div id="Title" class="title">Déposez votre ordonnance ici</div>
+              <div id="Subtitle" class="subtitle">JPG, PNG ou PDF · 5 MB max</div>
+            </div>
+          </div>
+        </div>
+        <div class="file-error-msg" id="file-error-msg">Fichier trop lourd (5 MB max). Veuillez en choisir un autre.</div>
+
+        <!-- Barre de progression -->
+        <div id="progressPanel" class="progress-panel">
+          <div class="progress-status-row">
+            <div class="status-left">
+              <div class="spinner" id="spinner"></div>
+              <span class="status-text" id="statusText">Préparation...</span>
+            </div>
+            <div class="percentage" id="percentage">0%</div>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="progressBarFill" class="progress-bar-fill"></div>
+          </div>
+        </div>
+
+        <button class="btn-send" id="btn-send" onclick="sendWithAttachment()" disabled>Envoyer à la pharmacie</button>
       </div>
 
-      <div class="file-trigger-zone" id="drop-zone">
-  <button class="file-remove-btn" id="removeFileBtn" title="Supprimer le fichier">✕</button>   <!-- AJOUTÉ -->
-        
-        <input type="file" id="fileInput" accept="image/*,application/pdf">
-        <div class="file-info-row">
-          <div class="folder-icon-container">
-            <div class="folder-back"></div>
-            <div class="folder-front"></div>
-            <div class="badge-files">FILES</div>
-          </div>
-          <div class="text-details">
-            <div id="Title" class="title">Déposez votre ordonnance ici</div>
-            <div id="Subtitle" class="subtitle">JPG, PNG ou PDF · 2 MB max</div>
-          </div>
-        </div>
+      <!-- Feedback succès -->
+      <div class="success-overlay" id="success-overlay">
+        <div class="success-checkmark">✓</div>
+        <div class="success-title">Ordonnance envoyée !</div>
+        <div class="success-sub">La pharmacie a bien reçu votre document.<br>Nous vous contacterons si besoin.</div>
       </div>
-      
-      <!-- Barre de progression -->
-      <div id="progressPanel" class="progress-panel">
-        <div class="progress-status-row">
-          <div class="status-left">
-            <div class="spinner" id="spinner"></div>
-            <span class="status-text" id="statusText">Préparation...</span>
-          </div>
-          <div class="percentage" id="percentage">0%</div>
-        </div>
-        <div class="progress-bar-bg">
-          <div id="progressBarFill" class="progress-bar-fill"></div>
-        </div>
-      </div>
-
-      <button class="btn-send" id="btn-send" onclick="sendWithAttachment()">Envoyer à la pharmacie</button>
     </div>
 
   </div>
@@ -420,215 +537,229 @@
     const statusText = document.getElementById('statusText');
     const spinner = document.getElementById('spinner');
     const btnSend = document.getElementById('btn-send');
-    const phoneInput = document.getElementById('sender-phone'); // AJOUTÉ ICI
-    const nameInput = document.getElementById('sender-name');   // AJOUTÉ ICI
+    const phoneInput = document.getElementById('sender-phone');
+    const nameInput = document.getElementById('sender-name');
+    const removeFileBtn = document.getElementById('removeFileBtn');
+    const filePreviewImg = document.getElementById('filePreviewImg');
+    const filePreviewPdf = document.getElementById('filePreviewPdf');
+    const folderIcon = document.getElementById('folderIcon');
+    const dropZone = document.getElementById('drop-zone');
+    const fileErrorMsg = document.getElementById('file-error-msg');
+    const nameError = document.getElementById('name-error');
+    const phoneError = document.getElementById('phone-error');
     
     let selectedFile = null;
-    
 
-   // 2. FORMATAGE AUTOMATIQUE DU TÉLÉPHONE
-if (phoneInput) {
-  phoneInput.addEventListener('input', function(e) {
-    let raw = e.target.value;
-
-    if (raw.startsWith('+33')) {
-      // Garde le +33 et formate le reste : +33 X XX XX XX XX
-      let digits = raw.replace(/^\+33/, '').replace(/\D/g, '').substring(0, 9);
-      let formatted = '+33';
-      if (digits.length > 0) formatted += ' ' + digits.substring(0, 1);
-      if (digits.length > 1) formatted += ' ' + digits.substring(1, 3);
-      if (digits.length > 3) formatted += ' ' + digits.substring(3, 5);
-      if (digits.length > 5) formatted += ' ' + digits.substring(5, 7);
-      if (digits.length > 7) formatted += ' ' + digits.substring(7, 9);
-      e.target.value = formatted;
-    } else {
-      let digits = raw.replace(/\D/g, '');
-      if (digits.startsWith('0') && digits.length > 10) digits = digits.substring(0, 10);
-      e.target.value = digits.replace(/(\d{2})(?=\d)/g, '$1 ');
-    }
-  });
-}
-
-// 3. GESTION DE L'AJOUT DE FICHIER
-const removeFileBtn = document.getElementById('removeFileBtn');
-
-fileInput.addEventListener('change', function(e) {
-  selectedFile = e.target.files[0];
-
-  
-  if (selectedFile) {
-    // --- 🚨 NOUVELLE VÉRIFICATION DE LA TAILLE (Max 2 Mo) 🚨 ---
-        const maxSizeInBytes = 2 * 1024 * 1024; // 2 Mo en octets
-        if (selectedFile.size > maxSizeInBytes) {
-          alert("Erreur : Le fichier est trop volumineux. La taille maximum autorisée est de 2 Mo.");
-          
-          // On vide la sélection pour empêcher l'envoi
-          fileInput.value = "";
-          selectedFile = null;
-          return; // On arrête le code ici, la barre de chargement ne se lancera pas
-        } else {
-    Title.innerText = selectedFile.name;
-    Subtitle.innerText = (selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB';
-    removeFileBtn.style.display = 'flex';
-    progressPanel.style.display = 'flex';
-    btnSend.style.display = 'block';
-    spinner.style.display = 'block';
-    startSatisfyingLoading();}
-  }
-});
-
-removeFileBtn.addEventListener('click', function(e) {
-  e.stopPropagation(); // empêche d'ouvrir le sélecteur de fichier
-  selectedFile = null;
-  fileInput.value = '';
-  Title.innerText = 'Déposez votre ordonnance ici';
-  Subtitle.innerText = 'JPG, PNG ou PDF · 2 MB max';
-  removeFileBtn.style.display = 'none';
-  progressPanel.style.display = 'none';
-  progressBarFill.style.width = '0%';
-  spinner.style.display = 'block';
-  btnSend.style.display = 'none';
-});
-    // 4. ANIMATION DE LA BARRE DE PROGRESSION
-   function startSatisfyingLoading() {
-  const bar = document.getElementById('progressBarFill');
-  const percentText = document.getElementById('percentage');
-  const statusText = document.getElementById('statusText');
-  const spinnerEl = document.getElementById('spinner');
-
-  bar.style.transition = "none";
-  bar.style.width = "0%";
-  percentText.innerText = "0%";
-  statusText.innerText = "Préparation...";
-
-  // Anime le chiffre en suivant la largeur réelle de la barre
-  function animatePercent(from, to, duration, onDone) {
-    const start = performance.now();
-    function step(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const value = Math.round(from + (to - from) * progress);
-      percentText.innerText = value + "%";
-      if (progress < 1) requestAnimationFrame(step);
-      else if (onDone) onDone();
-    }
-    requestAnimationFrame(step);
-  }
-
-  requestAnimationFrame(() => {
-    bar.style.transition = "width 0.5s ease-out";
-    bar.style.width = "50%";
-    statusText.innerText = "Téléchargement...";
-    animatePercent(0, 50, 500);
-  });
-
-  setTimeout(() => {
-    bar.style.transition = "width 2.5s ease-in-out";
-    bar.style.width = "75%";
-    animatePercent(50, 75, 2500);
-  }, 500);
-
-  setTimeout(() => {
-    bar.style.transition = "width 0.4s ease-in";
-    bar.style.width = "100%";
-    statusText.innerText = "Fichier prêt !";
-    animatePercent(75, 100, 400, () => {
-      if (spinnerEl) spinnerEl.style.display = 'none';
+    // ── VALIDATION TEMPS RÉEL NOM ──
+    nameInput.addEventListener('input', function() {
+      const val = this.value.trim();
+      if (val.length > 0) {
+        this.classList.add('input-ok'); this.classList.remove('input-error');
+        nameError.style.display = 'none';
+      }
+      updateSendBtn();
     });
-  }, 3000);
-}
-    // 5. FONCTION D'ENVOI (EMAILJS)
+
+    // ── FORMATAGE & VALIDATION TÉLÉPHONE ──
+    phoneInput.addEventListener('input', function(e) {
+      let raw = e.target.value;
+      if (raw.startsWith('+33')) {
+        let digits = raw.replace(/^\+33/, '').replace(/\D/g, '').substring(0, 9);
+        let formatted = '+33';
+        if (digits.length > 0) formatted += ' ' + digits.substring(0, 1);
+        if (digits.length > 1) formatted += ' ' + digits.substring(1, 3);
+        if (digits.length > 3) formatted += ' ' + digits.substring(3, 5);
+        if (digits.length > 5) formatted += ' ' + digits.substring(5, 7);
+        if (digits.length > 7) formatted += ' ' + digits.substring(7, 9);
+        e.target.value = formatted;
+      } else {
+        let digits = raw.replace(/\D/g, '');
+        if (digits.startsWith('0') && digits.length > 10) digits = digits.substring(0, 10);
+        e.target.value = digits.replace(/(\d{2})(?=\d)/g, '$1 ');
+      }
+      updateSendBtn();
+    });
+
+    // ── ACTIVER LE BOUTON ENVOYER ──
+    function updateSendBtn() {
+      const hasName = nameInput.value.trim().length > 0;
+      const hasFile = selectedFile !== null;
+      btnSend.disabled = !(hasName && hasFile);
+    }
+
+    // ── GESTION FICHIER ──
+    function handleFile(file) {
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        fileErrorMsg.style.display = 'block';
+        fileInput.value = '';
+        selectedFile = null;
+        updateSendBtn();
+        return;
+      }
+      fileErrorMsg.style.display = 'none';
+      selectedFile = file;
+
+      // Aperçu
+      folderIcon.style.display = 'none';
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = e => { filePreviewImg.src = e.target.result; };
+        reader.readAsDataURL(file);
+        filePreviewImg.style.display = 'block';
+        filePreviewPdf.style.display = 'none';
+      } else {
+        filePreviewImg.style.display = 'none';
+        filePreviewPdf.style.display = 'flex';
+      }
+
+      Title.innerText = file.name;
+      Subtitle.innerText = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+      removeFileBtn.style.display = 'flex';
+      progressPanel.style.display = 'flex';
+      spinner.style.display = 'block';
+      startSatisfyingLoading();
+      updateSendBtn();
+    }
+
+    fileInput.addEventListener('change', function(e) {
+      if (e.target.files[0]) handleFile(e.target.files[0]);
+    });
+
+    // ── DRAG & DROP ──
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault(); this.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', function() {
+      this.classList.remove('drag-over');
+    });
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault(); this.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+
+    // ── SUPPRIMER FICHIER ──
+    removeFileBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      selectedFile = null;
+      fileInput.value = '';
+      Title.innerText = 'Déposez votre ordonnance ici';
+      Subtitle.innerText = 'JPG, PNG ou PDF · 5 MB max';
+      removeFileBtn.style.display = 'none';
+      filePreviewImg.style.display = 'none';
+      filePreviewPdf.style.display = 'none';
+      folderIcon.style.display = 'block';
+      progressPanel.style.display = 'none';
+      progressBarFill.style.width = '0%';
+      spinner.style.display = 'block';
+      fileErrorMsg.style.display = 'none';
+      updateSendBtn();
+    });
+
+    // ── ANIMATION BARRE DE PROGRESSION ──
+    function startSatisfyingLoading() {
+      const bar = progressBarFill;
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      percentageText.innerText = '0%';
+      statusText.innerText = 'Préparation...';
+
+      function animatePercent(from, to, duration, onDone) {
+        const start = performance.now();
+        function step(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          percentageText.innerText = Math.round(from + (to - from) * progress) + '%';
+          if (progress < 1) requestAnimationFrame(step);
+          else if (onDone) onDone();
+        }
+        requestAnimationFrame(step);
+      }
+
+      requestAnimationFrame(() => {
+        bar.style.transition = 'width 0.5s ease-out';
+        bar.style.width = '50%';
+        statusText.innerText = 'Téléchargement...';
+        animatePercent(0, 50, 500);
+      });
+      setTimeout(() => {
+        bar.style.transition = 'width 2.5s ease-in-out';
+        bar.style.width = '75%';
+        animatePercent(50, 75, 2500);
+      }, 500);
+      setTimeout(() => {
+        bar.style.transition = 'width 0.4s ease-in';
+        bar.style.width = '100%';
+        statusText.innerText = 'Fichier prêt !';
+        animatePercent(75, 100, 400, () => { if (spinner) spinner.style.display = 'none'; });
+      }, 3000);
+    }
+
+    // ── ENVOI EMAILJS ──
     function sendWithAttachment() {
-      const senderName = nameInput ? nameInput.value.trim() : "";
-      const senderPhone = phoneInput ? phoneInput.value.trim().replace(/\s+/g, '') : "";
+      const senderName = nameInput ? nameInput.value.trim() : '';
+      const senderPhone = phoneInput ? phoneInput.value.trim().replace(/\s+/g, '') : '';
+      const senderMessage = document.getElementById('sender-message') ? document.getElementById('sender-message').value.trim() : '';
 
       if (!senderName) {
-        alert("Veuillez renseigner votre Votre nom complet.");
-        if(nameInput) nameInput.focus();
+        nameInput.classList.add('input-error');
+        nameError.style.display = 'block';
+        nameInput.focus();
         return;
       }
-
-      // Vérification des règles du téléphone (optionnel)
       if (senderPhone.length > 0) {
+        let valid = true;
         if (senderPhone.startsWith('0')) {
-          if (senderPhone.length !== 10 || !/^\d+$/.test(senderPhone)) {
-            alert("Votre numéro doit comporter exactement 10 chiffres.");
-            if(phoneInput) phoneInput.focus();
-            return;
-          }
+          if (senderPhone.length !== 10 || !/^\d+$/.test(senderPhone)) valid = false;
         } else if (senderPhone.startsWith('+33')) {
-          const digits = senderPhone.replace(/^\+33/, '').replace(/\D/g, '');
-          if (digits.length !== 9) {
-            alert("Votre numéro doit comporter 9 chiffres après l'indicatif (+33).");
-            if(phoneInput) phoneInput.focus();
-            return;
-          }
-        } else {
-          if (!/^\d+$/.test(senderPhone) || senderPhone.length < 7) {
-            alert("Veuillez entrer un numéro de téléphone valide.");
-            if(phoneInput) phoneInput.focus();
-            return;
-          }
+          if (senderPhone.replace(/^\+33/, '').replace(/\D/g, '').length !== 9) valid = false;
+        } else if (!/^\d+$/.test(senderPhone) || senderPhone.length < 7) {
+          valid = false;
+        }
+        if (!valid) {
+          phoneInput.classList.add('input-error');
+          phoneError.style.display = 'block';
+          phoneInput.focus();
+          return;
         }
       }
-      if (!selectedFile) {
-        alert("Veuillez sélectionner un fichier.");
-        return;
-      }
+      if (!selectedFile) return;
 
-      // Bouton en mode "chargement"
-      btnSend.textContent = "Envoi en cours...";
-      btnSend.style.opacity = "0.6";
+      btnSend.textContent = 'Envoi en cours...';
       btnSend.disabled = true;
 
-      // Lecture et envoi à EmailJS
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
-      reader.onload = function () {
-        const base64File = reader.result;
-
+      reader.onload = function() {
         const templateParams = {
           name_sender: senderName,
           phone_sender: senderPhone,
+          message_sender: senderMessage,
           file_name: selectedFile.name,
-          my_file: base64File
+          my_file: reader.result
         };
 
         emailjs.send('service_3svkyii', 'template_hlj4f0g', templateParams)
-          .then(function(response) {
-             alert("Succès ! L'ordonnance de " + senderName + " a bien été envoyée.");
-             
-             // Remise à zéro
-             selectedFile = null;
-             fileInput.value = "";
-             if(nameInput) nameInput.value = "";
-             if(phoneInput) phoneInput.value = "";
-             
-             Title.innerText = "Déposez votre ordonnance ici";
-             Subtitle.innerText = "JPG, PNG ou PDF · 2 MB max";
-             progressPanel.style.display = 'none';
-             progressBarFill.style.width = '0%';
-             spinner.style.display = 'block';
-             btnSend.style.display = 'none';
-
+          .then(function() {
+            // Feedback succès
+            document.getElementById('form-content').style.display = 'none';
+            const overlay = document.getElementById('success-overlay');
+            overlay.style.display = 'flex';
           }, function(error) {
-             console.error("Échec EmailJS :", error);
-             alert("Erreur lors de l'envoi. Veuillez réessayer.");
-          })
-          .finally(() => {
-             btnSend.textContent = "Envoyer à la pharmacie";
-             btnSend.style.opacity = "1";
-             btnSend.disabled = false;
+            console.error('Échec EmailJS :', error);
+            alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+            btnSend.textContent = 'Envoyer à la pharmacie';
+            btnSend.disabled = false;
           });
       };
-      
-      reader.onerror = function (error) {
-        console.error("Erreur de lecture :", error);
-        alert("Impossible de lire le fichier.");
-        btnSend.textContent = "Envoyer à la pharmacie";
-        btnSend.style.opacity = "1";
+      reader.onerror = function() {
+        alert('Impossible de lire le fichier.');
+        btnSend.textContent = 'Envoyer à la pharmacie';
         btnSend.disabled = false;
       };
     }
-</script>
+  </script>
+    
+
 </body>
 </html>
