@@ -348,7 +348,7 @@
         <img class="platform-icon" src="google-logo.png" alt="Google">
         <div class="card-label">Nos avis<br>Google</div>
         <button class="btn-platform btn-google-plat">
-          <span class="btn-text">5 étoiles !</span>
+          <span class="btn-text">Votre avis compte !</span>
         </button>
       </div>
     </a>
@@ -357,10 +357,10 @@
       <div style="color:#fff; font-weight:800; font-size:18px; margin-bottom:30px; text-align:center;">Envoyer votre ordonnance</div>
       
       <div class="input-group">
-        <label for="sender-name">Nom et Prénom :</label>
+        <label for="sender-name">Votre nom complet :</label>
         <input type="text" id="sender-name" autocomplete="name" placeholder="Ex: DUPONT Jean">
         
-        <label for="sender-phone">Téléphone (Optionnel) :</label>
+        <label for="sender-phone">Téléphone — pour vous rappeler si besoin :</label>
         <input type="tel" id="sender-phone" autocomplete="tel" placeholder="06 12 34 56 78">
       </div>
 
@@ -375,8 +375,8 @@
             <div class="badge-files">FILES</div>
           </div>
           <div class="text-details">
-            <div id="Title" class="title">Ajouter un document</div>
-            <div id="Subtitle" class="subtitle">Sélectionnez votre ordonnance</div>
+            <div id="Title" class="title">Déposez votre ordonnance ici</div>
+            <div id="Subtitle" class="subtitle">JPG, PNG ou PDF · 2 MB max</div>
           </div>
         </div>
       </div>
@@ -395,7 +395,7 @@
         </div>
       </div>
 
-      <button class="btn-send" id="btn-send" onclick="sendWithAttachment()">Envoyer l'ordonnance</button>
+      <button class="btn-send" id="btn-send" onclick="sendWithAttachment()">Envoyer à la pharmacie</button>
     </div>
 
   </div>
@@ -481,8 +481,8 @@ removeFileBtn.addEventListener('click', function(e) {
   e.stopPropagation(); // empêche d'ouvrir le sélecteur de fichier
   selectedFile = null;
   fileInput.value = '';
-  Title.innerText = 'Ajouter un document';
-  Subtitle.innerText = 'Sélectionnez votre ordonnance';
+  Title.innerText = 'Déposez votre ordonnance ici';
+  Subtitle.innerText = 'JPG, PNG ou PDF · 2 MB max';
   removeFileBtn.style.display = 'none';
   progressPanel.style.display = 'none';
   progressBarFill.style.width = '0%';
@@ -542,7 +542,7 @@ removeFileBtn.addEventListener('click', function(e) {
       const senderPhone = phoneInput ? phoneInput.value.trim().replace(/\s+/g, '') : "";
 
       if (!senderName) {
-        alert("Veuillez renseigner votre Nom et Prénom.");
+        alert("Veuillez renseigner votre Votre nom complet.");
         if(nameInput) nameInput.focus();
         return;
       }
@@ -551,14 +551,14 @@ removeFileBtn.addEventListener('click', function(e) {
       if (senderPhone.length > 0) {
         if (senderPhone.startsWith('0')) {
           if (senderPhone.length !== 10 || !/^\d+$/.test(senderPhone)) {
-            alert("Le numéro commençant par 0 doit comporter exactement 10 chiffres.");
+            alert("Votre numéro doit comporter exactement 10 chiffres.");
             if(phoneInput) phoneInput.focus();
             return;
           }
         } else if (senderPhone.startsWith('+33')) {
           const digits = senderPhone.replace(/^\+33/, '').replace(/\D/g, '');
           if (digits.length !== 9) {
-            alert("Le numéro +33 doit comporter 9 chiffres après l'indicatif.");
+            alert("Votre numéro doit comporter 9 chiffres après l'indicatif (+33).");
             if(phoneInput) phoneInput.focus();
             return;
           }
@@ -603,8 +603,8 @@ removeFileBtn.addEventListener('click', function(e) {
              if(nameInput) nameInput.value = "";
              if(phoneInput) phoneInput.value = "";
              
-             Title.innerText = "Ajouter un document";
-             Subtitle.innerText = "Sélectionnez votre ordonnance";
+             Title.innerText = "Déposez votre ordonnance ici";
+             Subtitle.innerText = "JPG, PNG ou PDF · 2 MB max";
              progressPanel.style.display = 'none';
              progressBarFill.style.width = '0%';
              spinner.style.display = 'block';
@@ -615,7 +615,7 @@ removeFileBtn.addEventListener('click', function(e) {
              alert("Erreur lors de l'envoi. Veuillez réessayer.");
           })
           .finally(() => {
-             btnSend.textContent = "Envoyer l'ordonnance";
+             btnSend.textContent = "Envoyer à la pharmacie";
              btnSend.style.opacity = "1";
              btnSend.disabled = false;
           });
@@ -624,7 +624,7 @@ removeFileBtn.addEventListener('click', function(e) {
       reader.onerror = function (error) {
         console.error("Erreur de lecture :", error);
         alert("Impossible de lire le fichier.");
-        btnSend.textContent = "Envoyer l'ordonnance";
+        btnSend.textContent = "Envoyer à la pharmacie";
         btnSend.style.opacity = "1";
         btnSend.disabled = false;
       };
