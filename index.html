@@ -411,6 +411,10 @@
   if (phoneInput) {
     phoneInput.addEventListener('input', function(e) {
       let raw = e.target.value;
+      // Efface l'erreur dès que l'utilisateur retape
+      phoneInput.classList.remove('input-error');
+      document.getElementById('phone-error').style.display = 'none';
+      
       if (raw.startsWith('+33')) {
         let digits = raw.replace(/^\+33/, '').replace(/\D/g, '').substring(0, 9);
         let formatted = '+33';
