@@ -196,7 +196,58 @@
     .file-error-msg { display: none; color: #ff6b6b; font-size: 12px; font-weight: 600; margin-top: 8px; text-align: center; }
 
     /* ══ BARRE DE PROGRESSION ══ */
-    .progress-panel { margin-top: 18px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 14px 16px; display: none; flex-direction: column; gap: 12px; }
+.progress-panel {
+  margin-top: 18px;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  /* Glass blanc */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid transparent;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.70),
+    inset 0 0 8px rgba(255, 255, 255, 0.70),
+    0 4px 24px rgba(255, 255, 255, 0.06);
+  transition: box-shadow 0.4s ease;
+}
+
+/* Effet ver de terre : lumière qui parcourt le bord */
+@property --progress-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+    
+.progress-panel.file-done::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 15px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--progress-angle),
+    transparent 0%,
+    transparent 55%,
+    rgba(255, 255, 255, 0.95) 70%,
+    rgba(255, 255, 255, 0.4) 78%,
+    transparent 88%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+  animation: progress-border-spin 2.5s linear infinite;
+}
+@keyframes progress-border-spin {
+  to { --progress-angle: 360deg; }
+}
     .progress-status-row { display: flex; justify-content: space-between; align-items: center; }
     .status-left { display: flex; align-items: center; gap: 10px; }
     .spinner { width: 14px; height: 14px; border: 2px solid #fff; border-right-color: transparent; border-radius: 50%; animation: rotate 1s linear infinite; }
@@ -515,6 +566,7 @@
     Title.innerText = 'Déposez votre ordonnance ici';
     Subtitle.innerText = 'JPG, PNG ou PDF · 5 MB max';
     removeFileBtn.style.display = 'none';
+    progressPanel.classList.remove('file-done');
     filePreviewImg.style.display = 'none';
     filePreviewPdf.style.display = 'none';
     folderIcon.style.display = 'block';
@@ -560,6 +612,7 @@
       bar.style.transition = "width 0.4s ease-in";
       bar.style.width = "100%";
       statusText.innerText = "Fichier prêt !";
+      progressPanel.classList.add('file-done'); // ← AJOUTER
       animatePercent(75, 100, 400, () => {
         if (spinner) spinner.style.display = 'none';
       });
