@@ -30,7 +30,7 @@
       flex-direction: column;
       align-items: center;
       padding: 36px 16px 64px;
-      background-color: #e7e7e5;
+      background-color: #f0f0f0;
     }
 
     /* ══ HEADER PROFIL ══ */
@@ -49,8 +49,6 @@
       border-radius: 50%;
       object-fit: cover;
       background: #0012ff;
-      background-image: url('bg-swiftlink.png'); 
-
       /* ⚠️ IMPORTER : logo de la pharmacie (photo de profil ronde) */
     }
     .profile-name {
@@ -67,33 +65,33 @@
       text-align: center;
     }
 
-    /* ══ ICÔNES DE CONTACT (style Linktree) ══ */
+    /* ══ ICÔNES DE CONTACT ══ */
     .contact-icons {
       display: flex;
-      gap: 16px;
+      gap: 20px;
       margin-top: 6px;
       align-items: center;
       justify-content: center;
     }
     .contact-icon-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: #0012ff;
-      color: #fff;
-      border: none;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
       text-decoration: none;
-      transition: transform 0.18s, box-shadow 0.18s;
-      box-shadow: 0 2px 8px rgba(0,18,255,0.25);
+      transition: transform 0.18s, opacity 0.18s;
+    }
+    .contact-icon-btn img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
     }
     .contact-icon-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 4px 16px rgba(0,18,255,0.4);
+      transform: scale(1.15);
+      opacity: 0.7;
     }
 
     /* ══ BENTO GRID ══ */
@@ -121,24 +119,15 @@
       grid-column: 1;
       grid-row: 1;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 18px;
+      padding: 0;
+      overflow: hidden;
       min-height: 72px;
     }
-    .card-instagram .insta-logo {
-      width: 36px;
-      height: 36px;
-      flex-shrink: 0;
-      /* ⚠️ IMPORTER : logo Instagram blanc */
-    }
-    .card-instagram span {
-      font-family: 'Poppins', sans-serif;
-      font-size: 17px;
-      font-weight: 700;
-      color: #fff;
-      font-style: italic;
+    .card-instagram img.card-full-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     /* ══ CARD GOOGLE AVIS ══ */
@@ -146,34 +135,15 @@
       grid-column: 1;
       grid-row: 2;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 18px;
+      padding: 0;
+      overflow: hidden;
       min-height: 72px;
     }
-    .card-google .google-logo {
-      width: 36px;
-      height: 36px;
-      flex-shrink: 0;
-      /* ⚠️ IMPORTER : logo Google (G coloré) */
-    }
-    .card-google .google-text {
-      display: flex;
-      flex-direction: column;
-    }
-    .card-google .google-cta {
-      font-size: 12px;
-      font-weight: 800;
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      line-height: 1.2;
-    }
-    .card-google .google-stars {
-      font-size: 16px;
-      letter-spacing: 2px;
-      margin-top: 2px;
+    .card-google img.card-full-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     /* ══ CARD PROMO (colonne droite, 2 lignes de hauteur) ══ */
@@ -369,14 +339,22 @@
 
     <!-- Icônes de contact style Linktree -->
     <div class="contact-icons">
-      <!-- ⚠️ Remplacer href par le vrai numéro de téléphone -->
-      <a class="contact-icon-btn" href="tel:+33100000000" title="Appeler">📞</a>
-      <!-- ⚠️ Remplacer href par l'adresse Google Maps -->
-      <a class="contact-icon-btn" href="https://maps.google.com" target="_blank" title="Adresse">📍</a>
-      <!-- ⚠️ Remplacer href par la page "à propos" ou le site -->
-      <a class="contact-icon-btn" href="#" title="Informations">ℹ️</a>
-      <!-- ⚠️ Remplacer les horaires dans le tooltip ou href -->
-      <a class="contact-icon-btn" href="#" title="Horaires : Lun-Sam 9h-19h">🕐</a>
+        <!-- ⚠️ Remplacer href par le vrai numéro -->
+      <a class="contact-icon-btn" href="tel:+33100000000" title="Appeler">
+        <img src="phone.png" alt="Téléphone">
+      </a>
+      <!-- ⚠️ Remplacer href par le lien Google Maps -->
+      <a class="contact-icon-btn" href="https://maps.google.com" target="_blank" title="Adresse">
+        <img src="map-pin.png" alt="Adresse">
+      </a>
+      <!-- ⚠️ Remplacer href par le lien infos / site -->
+      <a class="contact-icon-btn" href="#" title="Informations">
+        <img src="infos.png" alt="Informations">
+      </a>
+      <!-- ⚠️ Remplacer href par page horaires -->
+      <a class="contact-icon-btn" href="#" title="Horaires">
+        <img src="clock.png" alt="Horaires">
+      </a>
     </div>
   </div>
 
@@ -386,20 +364,15 @@
     <!-- Instagram -->
     <!-- ⚠️ Remplacer href par le vrai lien Instagram -->
     <a href="https://www.instagram.com/swiftup_fr" target="_blank" class="card card-instagram">
-      <!-- ⚠️ IMPORTER : src="instagram-logo-white.png" -->
-      <img class="insta-logo" src="instagram-letter-white-logo-icon-ig-app-transparent-background-premium-social-media-design-for-digital-download-free-png.webp" alt="Instagram">
-      <span>Instagram</span>
+      <!-- ⚠️ IMPORTER : src="card-instagram.png" — image complète de la carte (icône + texte Instagram) -->
+      <img class="card-full-img" src="card-instagram.png" alt="Instagram">
     </a>
 
     <!-- Google Avis -->
     <!-- ⚠️ Remplacer href par le vrai lien Google Avis -->
     <a href="avis.html" class="card card-google">
-      <!-- ⚠️ IMPORTER : src="google-logo.png" -->
-      <img class="google-logo" src="google-logo.png" alt="Google">
-      <div class="google-text">
-        <div class="google-cta">Donnez nous<br>votre avis</div>
-        <div class="google-stars">★★★★★</div>
-      </div>
+      <!-- ⚠️ IMPORTER : src="card-google.png" — image complète de la carte (logo G + "Donnez nous votre avis" + étoiles) -->
+      <img class="card-full-img" src="card-google.png" alt="Google Avis">
     </a>
 
     <!-- Promo du mois -->
