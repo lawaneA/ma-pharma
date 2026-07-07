@@ -115,91 +115,52 @@
     }
     .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,18,255,0.35); }
 
-    /* ══ CARD INSTAGRAM ══ */
-    .card-instagram {
-      grid-column: 1;
-      grid-row: 1;
-      text-decoration: none;
-      padding: 0;
-      overflow: hidden;
-      min-height: 72px;
-    }
-    .card-instagram img.card-full-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+   /* ══ CARD INSTAGRAM ══ */
+.card-instagram {
+  grid-column: 1;
+  grid-row: 1;
+  text-decoration: none;
+  padding: 0;
+  overflow: hidden;
+  height: 90px;        /* hauteur fixe */
+}
+.card-instagram img.card-full-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* l'image remplit sans déformer */
+  display: block;
+}
 
-    /* ══ CARD GOOGLE AVIS ══ */
-    .card-google {
-      grid-column: 1;
-      grid-row: 2;
-      text-decoration: none;
-      padding: 0;
-      overflow: hidden;
-      min-height: 72px;
-    }
-    .card-google img.card-full-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+/* ══ CARD GOOGLE AVIS ══ */
+.card-google {
+  grid-column: 1;
+  grid-row: 2;
+  text-decoration: none;
+  padding: 0;
+  overflow: hidden;
+  height: 90px;        /* même hauteur fixe */
+}
+.card-google img.card-full-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-    /* ══ CARD PROMO (colonne droite, 2 lignes de hauteur) ══ */
-    .card-promo {
-      grid-column: 2;
-      grid-row: 1 / span 2;
-      display: flex;
-      flex-direction: column;
-      padding: 18px 14px 14px;
-      position: relative;
-      overflow: hidden;
-      min-height: 160px;
-    }
-    .promo-title {
-      font-size: 13px;
-      font-weight: 900;
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-      line-height: 1.2;
-    }
-    .promo-desc {
-      font-size: 11px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.9);
-      line-height: 1.5;
-      max-width: 55%;
-      margin-bottom: auto;
-    }
-    .promo-product-img {
-      position: absolute;
-      right: -6px;
-      top: 10px;
-      width: 52%;
-      max-width: 110px;
-      object-fit: contain;
-      /* ⚠️ IMPORTER : photo du produit en promotion (PNG fond transparent) */
-    }
-    .promo-cta {
-      margin-top: 12px;
-      display: inline-block;
-      background: #fff;
-      color: #0012ff;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 7px 12px;
-      border-radius: 20px;
-      text-decoration: none;
-      align-self: flex-start;
-      transition: background 0.2s;
-      white-space: nowrap;
-    }
-    .promo-cta:hover { background: #e8edff; }
-
+/* ══ CARD PROMO ══ */
+.card-promo {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  padding: 0;
+  overflow: hidden;
+  height: 192px;       /* 90px + 90px + 12px gap = exactement les 2 cards gauche */
+}
+.card-promo img.card-full-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
     /* ══ BENTO ORDONNANCE (pleine largeur) ══ */
     .card-ordonnance {
       grid-column: 1 / -1;
@@ -378,13 +339,9 @@
 
     <!-- Promo du mois -->
     <div class="card card-promo">
-      <div class="promo-title">PROMO DU MOIS</div>
-      <div class="promo-desc">Découvrez nos indispensables du moment à prix réduit : soins, protection et bien-être</div>
-      <!-- ⚠️ IMPORTER : src="produit-promo.png" — photo du produit PNG fond transparent -->
-      <img class="promo-product-img" src="produit-promo.png" alt="Produit promo">
-      <!-- ⚠️ Remplacer href par le lien promo -->
-      <a class="promo-cta" href="#">J'en profite ! →</a>
-    </div>
+  <!-- ⚠️ IMPORTER : promo-du-mois.png (600×600) -->
+  <img class="card-full-img" src="promo-du-mois.png" alt="Promo du mois">
+</div>
 
     <!-- Formulaire ordonnance -->
     <div class="card card-ordonnance">
