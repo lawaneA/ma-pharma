@@ -33,31 +33,7 @@
       background-color: #d2d2d2;
     }
 
-    /* ══ CADRE PRINCIPAL ══ */
-body {
-  font-family: 'Inter', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 36px 16px 64px;
-  background-color: #b2b2b2; /* fond extérieur */
-}
-
-.page-frame {
-  width: 100%;
-  max-width: 600px;
-  background: #d2d2d2; /* fond intérieur */
-  border-radius: 36px;
-  padding: 28px 16px 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.22),
-    0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
+  
     /* ══ BANNIÈRE ══ */
 .banniere {
   width: 100%;
@@ -65,7 +41,7 @@ body {
   border-radius: 20px;
   overflow: hidden;
   flex-shrink: 0;
-  width: 100%
+  max-width: 480px;
 }
 .banniere img {
   width: 100%;
@@ -82,6 +58,7 @@ body {
       gap: 10px;
       margin-bottom: 28px;
       width: 100%;
+      max-width: 480px
     }
     .profile-avatar {
       width: 96px;
@@ -147,6 +124,7 @@ body {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
+      max-width: 480px
     }
 
     /* ══ CARD DE BASE ══ */
@@ -337,9 +315,6 @@ body {
 </head>
 <body>
 
-<body>
-  <div class="page-frame">
-    
   <!-- ══ BANNIÈRE ══ -->
 <div class="banniere">
   <img src="banniere_test.png" alt="Bannière pharmacie">
@@ -469,9 +444,6 @@ body {
     </div>
     <span class="loader-label">Propulsé par Swift'Link</span>
   </div>
-
-    </div>
-</body>
 
   <script>
   const fileInput      = document.getElementById('fileInput');
