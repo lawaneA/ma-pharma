@@ -208,6 +208,30 @@
   #json-area { font-size:12px; font-family:monospace; min-height:200px; background:#f8f8f8; }
   .export-actions { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
 
+  /* ── HORAIRES GRID ── */
+  .horaires-grid { display:flex; flex-direction:column; gap:8px; }
+  .horaire-row {
+    display:grid; grid-template-columns:90px 1fr auto 1fr auto;
+    align-items:center; gap:8px;
+    background:#f8f8f8; border-radius:10px; padding:10px 12px;
+  }
+  .horaire-day { font-size:13px; font-weight:700; color:var(--text); }
+  .horaire-sep { font-size:13px; color:var(--muted); text-align:center; }
+  .horaire-row input[type=time] {
+    padding:7px 10px; border:1.5px solid var(--border);
+    border-radius:8px; font-family:inherit; font-size:13px;
+    color:var(--text); background:#fff; outline:none; width:100%;
+    transition:border-color .2s;
+  }
+  .horaire-row input[type=time]:focus { border-color:var(--blue); }
+  .horaire-closed-wrap { grid-column:2/-1; display:flex; align-items:center; gap:6px; }
+  .horaire-row.is-closed input[type=time] { opacity:.3; pointer-events:none; }
+  .closed-toggle { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; color:var(--muted); font-weight:500; user-select:none; }
+  .closed-toggle input[type=checkbox] { width:14px; height:14px; accent-color:var(--blue); cursor:pointer; }
+  @media(max-width:500px) {
+    .horaire-row { grid-template-columns:72px 1fr auto 1fr; }
+  }
+
   /* ── MOBILE NAV ── */
   @media(max-width:480px) {
     #nav { padding:0 12px; }
@@ -345,8 +369,10 @@
         </div>
       </div>
       <div class="field" style="margin-top:14px">
-        <label>Horaires (texte libre)</label>
-        <textarea id="ph-horaires" placeholder="Lun–Ven : 8h30–20h00&#10;Sam : 9h–18h&#10;Dim : Fermé" oninput="autoSave()"></textarea>
+        <label>Horaires d'ouverture</label>
+        <div class="horaires-grid" id="horaires-grid">
+          <!-- généré par JS -->
+        </div>
       </div>
     </div>
   </div>
@@ -442,7 +468,7 @@ const DEFAULTS = {
   pharmacy: {
     name:'Pharmacie NHEAN', sub:'Votre pharmacie de confiance',
     tel:'', maps:'', insta:'', avisName:'', web:'', horaires:'',
-    logo:'', banner:''
+    logo:'', banner:'', horairesSemaine:{}
   },
   promos: Array.from({length:8}, () => ({
     active:false, name:'', img:'', imgData:'', priceBefore:'', priceAfter:'', badge:''
@@ -490,10 +516,6 @@ function flashSaved() {
 //  AUTH
 // ═══════════════════════════════════
 function initAuth() {
-  // Set logo on login page
-  const ll = document.getElementById("login-logo-img"); if(ll) ll.src = LOGO_B64_DATA;
-  const nl = document.getElementById("nav-logo-img"); if(nl) nl.src = LOGO_B64_DATA;
-
   const session = sessionStorage.getItem(SESSION_KEY);
   if (session === 'ok') { hideLogin(); return; }
   document.getElementById('login-overlay').style.display = 'flex';
@@ -667,7 +689,8 @@ function fillInfo(cfg) {
   document.getElementById('ph-insta').value     = p.insta || '';
   document.getElementById('ph-avis-name').value = p.avisName || '';
   document.getElementById('ph-web').value       = p.web  || '';
-  document.getElementById('ph-horaires').value  = p.horaires || '';
+  document.getElementById('ph-horaires-legacy') && (document.getElementById('ph-horaires-legacy').value = p.horaires || '');
+  buildHorairesGrid(p.horairesSemaine || {});
   document.getElementById('ph-logo').value      = '';
   document.getElementById('ph-banner').value    = '';
 
@@ -694,7 +717,8 @@ function collectInfo() {
     insta:     document.getElementById('ph-insta').value,
     avisName:  document.getElementById('ph-avis-name').value,
     web:       document.getElementById('ph-web').value,
-    horaires:  document.getElementById('ph-horaires').value,
+    horaires:  collectHoraires().texte,
+    horairesSemaine: collectHoraires().semaine,
     logoData:  logoData.startsWith('data:') ? logoData : '',
     logo:      logoData.startsWith('data:') ? '' : logoData,
     bannerData: bannerData.startsWith('data:') ? bannerData : '',
@@ -768,8 +792,6 @@ async function savePromos(promos) {
   });
 }
 
-
-  
 function buildPromoGrid(cfg) {
   const grid = document.getElementById('promo-grid');
   grid.innerHTML = '';
@@ -981,6 +1003,61 @@ function collectOnesignal() {
 }
 
 // ═══════════════════════════════════
+//  HORAIRES PAR JOUR
+// ═══════════════════════════════════
+const JOURS = [
+  { id:'lun', label:'Lundi' },
+  { id:'mar', label:'Mardi' },
+  { id:'mer', label:'Mercredi' },
+  { id:'jeu', label:'Jeudi' },
+  { id:'ven', label:'Vendredi' },
+  { id:'sam', label:'Samedi' },
+  { id:'dim', label:'Dimanche' },
+];
+
+function buildHorairesGrid(saved) {
+  const grid = document.getElementById('horaires-grid');
+  grid.innerHTML = '';
+  JOURS.forEach(j => {
+    const d = saved[j.id] || { open:'09:00', close:'19:00', closed:false };
+    const row = document.createElement('div');
+    row.className = 'horaire-row' + (d.closed ? ' is-closed' : '');
+    row.id = 'hrow-' + j.id;
+    row.innerHTML = `
+      <span class="horaire-day">${j.label}</span>
+      <input type="time" id="h-open-${j.id}" value="${d.open || '09:00'}" oninput="autoSave()">
+      <span class="horaire-sep">→</span>
+      <input type="time" id="h-close-${j.id}" value="${d.close || '19:00'}" oninput="autoSave()">
+      <label class="closed-toggle" title="Fermé ce jour">
+        <input type="checkbox" id="h-closed-${j.id}" ${d.closed ? 'checked' : ''} onchange="onClosedToggle('${j.id}')">
+        Fermé
+      </label>
+    `;
+    grid.appendChild(row);
+  });
+}
+
+function onClosedToggle(id) {
+  const closed = document.getElementById('h-closed-' + id).checked;
+  const row = document.getElementById('hrow-' + id);
+  row.classList.toggle('is-closed', closed);
+  autoSave();
+}
+
+function collectHoraires() {
+  const semaine = {};
+  let lignes = [];
+  JOURS.forEach(j => {
+    const open   = document.getElementById('h-open-'  + j.id)?.value || '09:00';
+    const close  = document.getElementById('h-close-' + j.id)?.value || '19:00';
+    const closed = document.getElementById('h-closed-'+ j.id)?.checked || false;
+    semaine[j.id] = { open, close, closed };
+    lignes.push(`${j.label} : ${closed ? 'Fermé' : open + ' – ' + close}`);
+  });
+  return { semaine, texte: lignes.join('\n') };
+}
+
+// ═══════════════════════════════════
 //  COLLECT ALL
 // ═══════════════════════════════════
 function collectAll() {
@@ -1041,9 +1118,31 @@ function resetConfig() {
 function initApp() {
   const cfg = loadConfig();
   fillInfo(cfg);
+  buildHorairesGrid(cfg.pharmacy?.horairesSemaine || {});
   buildPromoGrid(cfg);
   fillNotif(cfg);
 }
+
+// Expose all functions globally pour les onclick HTML
+window.doLogin            = doLogin;
+window.doLogout           = doLogout;
+window.showTab            = showTab;
+window.autoSave           = autoSave;
+window.handleLogoUpload   = handleLogoUpload;
+window.onLogoUrlChange    = onLogoUrlChange;
+window.handleBannerUpload = handleBannerUpload;
+window.onBannerUrlChange  = onBannerUrlChange;
+window.clearBanner        = clearBanner;
+window.updateAvisPreview  = updateAvisPreview;
+window.onPromoToggle      = onPromoToggle;
+window.onPromoImgUrl      = onPromoImgUrl;
+window.handlePromoImg     = handlePromoImg;
+window.fetchSubscribers   = fetchSubscribers;
+window.sendNotification   = sendNotification;
+window.showJson           = showJson;
+window.exportJson         = exportJson;
+window.importJson         = importJson;
+window.resetConfig        = resetConfig;
 
 document.addEventListener("DOMContentLoaded", initAuth);
 </script>
