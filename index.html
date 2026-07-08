@@ -286,7 +286,20 @@
     .btn-google-review:hover { box-shadow: 0 4px 16px rgba(0,18,255,0.3); transform: translateY(-1px); }
     @keyframes pop-in { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-   
+    /* ══ LOADER ══ */
+    .loader-section { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-top: 48px; width: 100%; }
+    .loader-label { font-size: 12px; font-weight: 500; color: rgba(0,18,255,0.45); letter-spacing: 0.5px; }
+    .loader { --size: 110px; --dur: 4s; height: var(--size); aspect-ratio: 1; position: relative; }
+    .loader .box { position: absolute; background: linear-gradient(0deg, rgba(0,18,255,0.06) 0%, rgba(0,18,255,0.14) 100%); border-radius: 50%; border-top: 1px solid rgba(0,18,255,0.4); animation: ripple var(--dur) infinite ease-in-out; }
+    .loader .box:nth-child(1) { inset: 40%; z-index: 99; }
+    .loader .box:nth-child(2) { inset: 30%; z-index: 98; border-color: rgba(0,18,255,0.28); animation-delay: 0.4s; }
+    .loader .box:nth-child(3) { inset: 20%; z-index: 97; border-color: rgba(0,18,255,0.18); animation-delay: 0.8s; }
+    .loader .box:nth-child(4) { inset: 10%; z-index: 96; border-color: rgba(0,18,255,0.10); animation-delay: 1.2s; }
+    .loader .box:nth-child(5) { inset: 0%;  z-index: 95; border-color: rgba(0,18,255,0.05); animation-delay: 1.6s; }
+    .loader .logo { position: absolute; inset: 0; display: grid; place-content: center; padding: 28%; z-index: 100; }
+    .loader .logo img { width: 100%; animation: logo-pulse var(--dur) infinite ease-in-out; }
+    @keyframes ripple { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+    @keyframes logo-pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
   /* ══ MODALE HORAIRES ══ */
   .modal-overlay {
     display:none; position:fixed; inset:0; z-index:9000;
@@ -299,14 +312,13 @@
     width:100%; max-width:480px; padding:24px 20px 40px;
     animation:slide-up .3s cubic-bezier(.25,1,.5,1);
   }
-  @keyframes slide-up { from { transform:translateY(100%); } to { transform:translateY(0); } }
+  @keyframes slide-up { from{transform:translateY(100%)} to{transform:translateY(0)} }
   .modal-handle { width:40px; height:4px; background:#e0e0e0; border-radius:2px; margin:0 auto 20px; }
-  .modal-title { font-size:18px; font-weight:800; color:#111; margin-bottom:18px; display:flex; align-items:center; gap:8px; }
+  .modal-title { font-size:18px; font-weight:800; color:#111; margin-bottom:18px; }
   .horaire-liste { display:flex; flex-direction:column; gap:6px; }
   .horaire-ligne {
     display:flex; align-items:center; justify-content:space-between;
-    padding:10px 14px; border-radius:12px; background:#f5f6fa;
-    font-size:14px;
+    padding:10px 14px; border-radius:12px; background:#f5f6fa; font-size:14px;
   }
   .horaire-ligne.today { background:#e8eaff; }
   .horaire-ligne .jour { font-weight:700; color:#111; min-width:90px; }
@@ -317,6 +329,7 @@
     background:#f0f0f0; border:none; font-family:'Inter',sans-serif;
     font-size:14px; font-weight:700; color:#111; cursor:pointer;
   }
+
   </style>
 </head>
 <body>
@@ -352,7 +365,7 @@
         </a>
       </div>
       <div style="display:flex; flex-direction:column; align-items:center;">
-        <a class="contact-icon-btn" href="#">
+        <a class="contact-icon-btn" id="link-clock" href="#">
           <img src="clock.svg" alt="Horaires">
         </a>
       </div>
@@ -460,6 +473,15 @@
 
   </div>
 
+  <!-- ══ LOADER ══ -->
+  <div class="loader-section">
+    <div class="loader">
+      <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
+      <!-- ⚠️ IMPORTER : Logo-test-swiftlink.png -->
+      <div class="logo"><img src="Logo-test-swiftlink.png" alt="Swift'Link"></div>
+    </div>
+    <span class="loader-label">Propulsé par Swift'Link</span>
+  </div>
 
   <script>
   const fileInput      = document.getElementById('fileInput');
@@ -718,16 +740,24 @@
     if (phoneInput) phoneInput.classList.remove('input-ok', 'input-error');
     updateSendBtn();
   });
+  </script>
 
+  <!-- ══ MODALE HORAIRES ══ -->
+  <div class="modal-overlay" id="modal-horaires" onclick="if(event.target===this)closeHoraires()">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">🕐 Nos horaires</div>
+      <div class="horaire-liste" id="horaire-liste"></div>
+      <button class="modal-close" onclick="closeHoraires()">Fermer</button>
+    </div>
+  </div>
+
+  <script>
   // ── MODALE HORAIRES ──
   const JOURS_FR = [
-    { id:'lun', label:'Lundi' },
-    { id:'mar', label:'Mardi' },
-    { id:'mer', label:'Mercredi' },
-    { id:'jeu', label:'Jeudi' },
-    { id:'ven', label:'Vendredi' },
-    { id:'sam', label:'Samedi' },
-    { id:'dim', label:'Dimanche' },
+    {id:'lun',label:'Lundi'},{id:'mar',label:'Mardi'},{id:'mer',label:'Mercredi'},
+    {id:'jeu',label:'Jeudi'},{id:'ven',label:'Vendredi'},
+    {id:'sam',label:'Samedi'},{id:'dim',label:'Dimanche'},
   ];
   const JOUR_INDEX = ['dim','lun','mar','mer','jeu','ven','sam'];
 
@@ -737,32 +767,25 @@
   });
 
   function openHoraires() {
-    const liste = document.getElementById('horaire-liste');
+    const liste   = document.getElementById('horaire-liste');
     const todayId = JOUR_INDEX[new Date().getDay()];
-    let semaine = {};
+    let semaine   = {};
     try {
       const raw = localStorage.getItem('swiftlink_config');
-      if (raw) {
-        const cfg = JSON.parse(raw);
-        semaine = cfg.pharmacy?.horairesSemaine || {};
-      }
+      if (raw) semaine = JSON.parse(raw)?.pharmacy?.horairesSemaine || {};
     } catch(e) {}
 
-    const hasDays = Object.keys(semaine).length > 0;
-    if (!hasDays) {
-      liste.innerHTML = '<div style="color:#aaa;font-size:13px;text-align:center;padding:12px 0">Horaires non renseignés.<br>Contactez-nous par téléphone.</div>';
+    if (!Object.keys(semaine).length) {
+      liste.innerHTML = '<div style="color:#aaa;font-size:13px;text-align:center;padding:16px 0">Horaires non renseignés.<br>Contactez-nous par téléphone.</div>';
     } else {
       liste.innerHTML = JOURS_FR.map(j => {
-        const d = semaine[j.id] || { open:'09:00', close:'19:00', closed:false };
+        const d = semaine[j.id] || {open:'09:00',close:'19:00',closed:false};
         const isToday = j.id === todayId;
-        const todayBadge = isToday ? " <span style=\"font-size:10px;color:#0012ff;background:#d0d4ff;padding:1px 6px;border-radius:10px;font-weight:700\">Auj.</span>" : '';
-        const heureHtml = d.closed
+        const badge = isToday ? ' <span style="font-size:10px;color:#0012ff;background:#d0d4ff;padding:1px 6px;border-radius:10px;font-weight:700">Auj.</span>' : '';
+        const heure = d.closed
           ? '<span class="heure ferme">Fermé</span>'
           : `<span class="heure">${d.open} – ${d.close}</span>`;
-        return `<div class="horaire-ligne${isToday ? ' today' : ''}">
-          <span class="jour">${j.label}${todayBadge}</span>
-          ${heureHtml}
-        </div>`;
+        return `<div class="horaire-ligne${isToday?' today':''}"><span class="jour">${j.label}${badge}</span>${heure}</div>`;
       }).join('');
     }
     document.getElementById('modal-horaires').classList.add('open');
@@ -774,18 +797,6 @@
     document.body.style.overflow = '';
   }
   </script>
-
-  <!-- ══ MODALE HORAIRES ══ -->
-  <div class="modal-overlay" id="modal-horaires" onclick="if(event.target===this)closeHoraires()">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-title">🕐 Nos horaires</div>
-      <div class="horaire-liste" id="horaire-liste">
-        <div style="color:#aaa;font-size:13px">Chargement...</div>
-      </div>
-      <button class="modal-close" onclick="closeHoraires()">Fermer</button>
-    </div>
-  </div>
 
 </body>
 </html>
