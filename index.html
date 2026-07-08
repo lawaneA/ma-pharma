@@ -21,6 +21,13 @@
     (function(){ emailjs.init("Apzn8FzYNZlXAQTs-"); })();
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://twewgozdynowoieyqrcf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3ZXdnb3pkeW5vd29pZXlxcmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MzM4MjEsImV4cCI6MjA5OTEwOTgyMX0.p8niB1AotODvOlTg529rWz4BsPVRwHqflx5EXasgn5s';
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
+
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -752,8 +759,8 @@
     </div>
   </div>
 
-  <script>
-  // ── MODALE HORAIRES ──
+ <script>
+  // ── MODALE HORAIRES (Cloud Supabase) ──
   const JOURS_FR = [
     {id:'lun',label:'Lundi'},{id:'mar',label:'Mardi'},{id:'mer',label:'Mercredi'},
     {id:'jeu',label:'Jeudi'},{id:'ven',label:'Vendredi'},
@@ -761,20 +768,39 @@
   ];
   const JOUR_INDEX = ['dim','lun','mar','mer','jeu','ven','sam'];
 
-  document.getElementById('link-clock').addEventListener('click', function(e) {
+  document.getElementById('link-clock').addEventListener('click', async function(e) {
     e.preventDefault();
-    openHoraires();
+    await openHoraires();
   });
 
-  function openHoraires() {
+  async function openHoraires() {
     const liste   = document.getElementById('horaire-liste');
     const todayId = JOUR_INDEX[new Date().getDay()];
-    let semaine   = {};
-    try {
-      const raw = localStorage.getItem('swiftlink_config');
-      if (raw) semaine = JSON.parse(raw)?.pharmacy?.horairesSemaine || {};
-    } catch(e) {}
 
+    // 1. Affichage de l'état de chargement
+    liste.innerHTML = '<div style="color:#555;font-size:14px;text-align:center;padding:16px 0">Chargement des horaires...</div>';
+    document.getElementById('modal-horaires').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    let semaine = {};
+
+    // 2. Requête en temps réel vers Supabase
+    try {
+      const { data, error } = await supabase
+        .from('pharmacies')
+        .select('horaires')
+        .eq('slug', 'pharmacie-nhean')
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error; // On ignore l'erreur si aucune ligne n'existe encore
+      if (data && data.horaires) {
+        semaine = data.horaires;
+      }
+    } catch(e) {
+      console.error("Erreur de récupération des horaires :", e);
+    }
+
+    // 3. Rendu de l'affichage
     if (!Object.keys(semaine).length) {
       liste.innerHTML = '<div style="color:#aaa;font-size:13px;text-align:center;padding:16px 0">Horaires non renseignés.<br>Contactez-nous par téléphone.</div>';
     } else {
@@ -788,8 +814,6 @@
         return `<div class="horaire-ligne${isToday?' today':''}"><span class="jour">${j.label}${badge}</span>${heure}</div>`;
       }).join('');
     }
-    document.getElementById('modal-horaires').classList.add('open');
-    document.body.style.overflow = 'hidden';
   }
 
   function closeHoraires() {
@@ -797,6 +821,5 @@
     document.body.style.overflow = '';
   }
   </script>
-
 </body>
 </html>
