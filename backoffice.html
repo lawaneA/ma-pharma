@@ -478,6 +478,70 @@ const DEFAULTS = {
   credentials: { id: DEFAULT_ID, pw: DEFAULT_PW }
 };
 
+  // ═══════════════════════════════════
+//  SUPABASE & AUTOSAVE (SYNCHRONISATION CLOUD)
+// ═══════════════════════════════════
+const SUPABASE_URL = 'https://twewgozdynowoieyqrcf.supabase.co/rest/v1/';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3ZXdnb3pkeW5vd29pZXlxcmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MzM4MjEsImV4cCI6MjA5OTEwOTgyMX0.p8niB1AotODvOlTg529rWz4BsPVRwHqflx5EXasgn5s';
+const SLUG = 'pharmacie-nhean'; // ⚠️ Identifiant unique de cette pharmacie
+
+let cloudSyncTimer; // Timer pour éviter de spammer Supabase
+
+function autoSave() {
+  const cfg = collectAll();
+  
+  // 1. Sauvegarde instantanée de sécurité en local
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+  updateLivePreviews();
+
+  // 2. Préparation de l'indicateur visuel
+  const indicator = document.getElementById('save-indicator');
+  indicator.textContent = 'Enregistrement...';
+  indicator.style.color = '#eab308'; // Jaune/Orange pendant la frappe
+  indicator.style.opacity = '1';
+
+  // 3. Attente de 1 seconde sans frappe pour envoyer à Supabase
+  clearTimeout(cloudSyncTimer);
+  cloudSyncTimer = setTimeout(() => {
+    syncToSupabase(cfg, indicator);
+  }, 1000);
+}
+
+// Fonction d'envoi vers Supabase (Mode UPSERT : Met à jour ou Crée)
+async function syncToSupabase(cfg, indicator) {
+  try {
+    const payload = {
+      slug: SLUG,
+      horaires: cfg.pharmacy.horairesSemaine // On envoie les horaires dans la colonne JSONB
+    };
+
+    const response = await fetch(`${SUPABASE_URL}pharmacies`, {
+      method: 'POST', // Avec le header Prefer, POST agit comme un UPSERT
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates' // Magique : Met à jour si le slug existe, sinon le crée
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) throw new Error('Erreur réseau Supabase');
+
+    // Succès
+    indicator.textContent = 'En ligne ✓';
+    indicator.style.color = '#16a34a'; // Vert
+    setTimeout(() => {
+      if (indicator.textContent === 'En ligne ✓') indicator.style.opacity = '0';
+    }, 2500);
+
+  } catch (error) {
+    console.error("Échec de la synchro Cloud :", error);
+    indicator.textContent = 'Erreur Cloud ✗';
+    indicator.style.color = '#dc2626'; // Rouge
+  }
+}
+
 // ═══════════════════════════════════
 //  STORAGE
 // ═══════════════════════════════════
@@ -499,11 +563,7 @@ function saveConfig(cfg) {
 
 function getConfig() { return loadConfig(); }
 
-function autoSave() {
-  const cfg = collectAll();
-  saveConfig(cfg);
-  updateLivePreviews();
-}
+
 
 function flashSaved() {
   const el = document.getElementById('save-indicator');
@@ -735,63 +795,8 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const SLUG = 'pharmacie-nhean'; // ⚠️ différent par pharmacie
 
 // ── SAUVEGARDER INFOS PHARMACIE ──
-async function savePharmacieInfos(data) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/pharmacies?slug=eq.${SLUG}`, {
-    method: 'PATCH',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    },
-    body: JSON.stringify(data)
-  });
-  // Si la pharmacie n'existe pas encore → INSERT
-  if (res.status === 404 || res.status === 204) {
-    await fetch(`${SUPABASE_URL}/rest/v1/pharmacies`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ slug: SLUG, ...data })
-    });
-  }
-}
 
-// ── SAUVEGARDER LES 8 PROMOS ──
-async function savePromos(promos) {
-  // Supprime les anciennes du mois
-  await fetch(`${SUPABASE_URL}/rest/v1/promos?pharmacie_slug=eq.${SLUG}`, {
-    method: 'DELETE',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY
-    }
-  });
-  // Réinsère les nouvelles
-  const rows = promos.map((p, i) => ({
-    pharmacie_slug: SLUG,
-    position: i + 1,
-    actif: p.actif,
-    nom: p.nom,
-    image_url: p.image_url,
-    prix_avant: p.prix_avant || null,
-    prix_apres: p.prix_apres || null,
-    badge: p.badge || null
-  }));
-  await fetch(`${SUPABASE_URL}/rest/v1/promos`, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(rows)
-  });
-}
-
+  
 function buildPromoGrid(cfg) {
   const grid = document.getElementById('promo-grid');
   grid.innerHTML = '';
