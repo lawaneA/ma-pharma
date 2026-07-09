@@ -6,6 +6,12 @@
   <title>Promos du mois</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://twewgozdynowoieyqrcf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3ZXdnb3pkeW5vd29pZXlxcmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MzM4MjEsImV4cCI6MjA5OTEwOTgyMX0.p8niB1AotODvOlTg529rWz4BsPVRwHqflx5EXasgn5s';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -163,36 +169,30 @@
   </div>
 
   <script>
+  const SLUG = 'pharmacie-nhean'; // ⚠️ Identifiant unique de cette pharmacie
+
   function calcDiscount(avant, apres) {
     if (!avant || !apres || avant <= apres) return null;
     return '-' + Math.round((1 - apres / avant) * 100) + '%';
   }
 
-  function renderPromos() {
+  async function renderPromos() {
     const grid = document.getElementById('promo-grid');
     let promos = [];
 
     try {
-      const raw = localStorage.getItem('swiftlink_config');
-      if (raw) {
-        const cfg = JSON.parse(raw);
+      const { data, error } = await supabaseClient
+        .from('promos')
+        .select('*')
+        .eq('pharmacie_slug', SLUG)
+        .order('position', { ascending: true });
 
-        // Nom de la pharmacie
-        const nomPharmacie = cfg.pharmacy?.name || cfg.pharmacie?.nom || '';
-        if (nomPharmacie) {
-          document.getElementById('pharmacie-name').textContent = nomPharmacie;
-        }
+      if (error) throw error;
 
-        // Lire les promos — compatibilité backoffice (active/name/img) ET ancien format (actif/nom/image)
-        const toutes = cfg.promos || [];
-        promos = toutes.filter(p => {
-          const estActif = p.active === true || p.actif === true;
-          const aNom     = p.name || p.nom;
-          return estActif && aNom;
-        });
-      }
+      // On ne garde que les promos actives avec un nom renseigné
+      promos = (data || []).filter(p => p.actif === true && p.nom && p.nom.trim().length > 0);
     } catch(e) {
-      console.warn('Config invalide', e);
+      console.error('Erreur de récupération des promos :', e);
     }
 
     if (promos.length === 0) {
@@ -205,15 +205,14 @@
     }
 
     grid.innerHTML = promos.map(p => {
-      // Compatibilité des deux formats de champs
-      const nom      = p.name       || p.nom        || '';
-      const imgSrc   = p.imgData    || p.img         || p.image || 'placeholder-product.png';
-      const badge    = p.badge      || '';
-      const prixAvant= parseFloat(p.priceBefore || p.prix_avant) || 0;
-      const prixApres= parseFloat(p.priceAfter  || p.prix_apres) || 0;
+      const nom       = p.nom || '';
+      const imgSrc    = p.image_url || 'placeholder-product.png';
+      const badge     = p.badge || '';
+      const prixAvant = parseFloat(p.prix_avant) || 0;
+      const prixApres = parseFloat(p.prix_apres) || 0;
 
       const discount  = calcDiscount(prixAvant, prixApres);
-      const badgeHtml = badge    ? `<div class="product-badge">${badge}</div>` : '';
+      const badgeHtml = badge     ? `<div class="product-badge">${badge}</div>` : '';
       const avantHtml = prixAvant ? `<span class="price-before">${prixAvant.toFixed(2)} €</span>` : '';
       const apresHtml = prixApres ? `<span class="price-after">${prixApres.toFixed(2)} €</span>`  : '';
       const pctHtml   = discount  ? `<span class="discount-pct">${discount}</span>`               : '';
