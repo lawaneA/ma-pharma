@@ -841,7 +841,7 @@ function buildPromoGrid(cfg) {
         <div class="field">
           <label>Image du produit</label>
           <div class="img-upload-row">
-            <div class="img-preview-box" id="promo-thumb-${i}" onclick="document.getElementById('promo-file-${i}').click()" title="Cliquer pour changer l'image">
+            <div class="img-preview-box" id="promo-thumb-${i}" data-imgdata="${esc(imgSrc)}" onclick="document.getElementById('promo-file-${i}').click()" title="Cliquer pour changer l'image">
               ${imgSrc ? `<img src="${esc(imgSrc)}" style="display:block;width:100%;height:100%;object-fit:cover">` : '<span class="img-placeholder">🖼</span>'}
             </div>
             <div style="flex:1">
@@ -850,6 +850,7 @@ function buildPromoGrid(cfg) {
                 <input type="file" id="promo-file-${i}" accept="image/*" onchange="handlePromoImg(${i}, event)" style="display:none">
               </label>
               <input type="url" id="promo-img-${i}" placeholder="Ou coller une URL…" value="${esc(p.img||'')}" oninput="onPromoImgUrl(${i})" style="margin-top:4px">
+              <div class="field-error-msg" id="promo-img-error-${i}" style="display:none;color:#cc2222;font-size:11px;margin-top:4px;">Image trop lourde (max 400 Ko). Choisis-en une autre ou compresse-la.</div>
             </div>
           </div>
         </div>
@@ -879,17 +880,54 @@ function buildPromoGrid(cfg) {
 
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
+const PROMO_IMG_MAX_KB = 400; // Limite après compression
+
 function handlePromoImg(i, e) {
   const file = e.target.files[0];
   if (!file) return;
+  const errEl = document.getElementById('promo-img-error-'+i);
+  errEl.style.display = 'none';
+
   const reader = new FileReader();
   reader.onload = ev => {
-    const data = ev.target.result;
-    updatePromoThumb(i, data);
-    document.getElementById('promo-img-'+i).value = '';
-    autoSave();
+    const img = new Image();
+    img.onload = () => {
+      // Redimensionne max 800px de large, recompresse en JPEG qualité dégressive
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(1, 800 / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      let quality = 0.85;
+      let dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+      // Réduit la qualité tant que c'est trop lourd (jusqu'à un plancher raisonnable)
+      while (dataUrl.length * 0.75 / 1024 > PROMO_IMG_MAX_KB && quality > 0.3) {
+        quality -= 0.1;
+        dataUrl = canvas.toDataURL('image/jpeg', quality);
+      }
+
+      const finalSizeKB = (dataUrl.length * 0.75 / 1024);
+      if (finalSizeKB > PROMO_IMG_MAX_KB) {
+        errEl.style.display = 'block';
+        return;
+      }
+
+      updatePromoThumb(i, dataUrl);
+      document.getElementById('promo-img-'+i).value = '';
+      autoSave();
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+function updatePromoThumb(i, src) {
+  const box = document.getElementById('promo-thumb-'+i);
+  box.innerHTML = src ? `<img src="${src}" style="display:block;width:100%;height:100%;object-fit:cover">` : '<span class="img-placeholder">🖼</span>';
+  box.dataset.imgdata = src;
 }
 
 function onPromoImgUrl(i) {
@@ -898,14 +936,6 @@ function onPromoImgUrl(i) {
   autoSave();
 }
 
-function updatePromoThumb(i, src) {
-  const box = document.getElementById('promo-thumb-'+i);
-  if (src) {
-    box.innerHTML = `<img src="${src}" style="display:block;width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<span class=img-placeholder>🖼</span>'">`;
-  } else {
-    box.innerHTML = '<span class="img-placeholder">🖼</span>';
-  }
-}
 
 function onPromoToggle(i) {
   const active = document.getElementById('promo-active-'+i).checked;
@@ -915,8 +945,8 @@ function onPromoToggle(i) {
 
 function collectPromos() {
   return Array.from({length:8}, (_,i) => {
-    const thumbImg = document.querySelector('#promo-thumb-'+i+' img');
-    const imgData  = (thumbImg && thumbImg.src && thumbImg.src.startsWith('data:')) ? thumbImg.src : '';
+    const thumbBox = document.getElementById('promo-thumb-'+i);
+    const imgData  = thumbBox?.dataset.imgdata && thumbBox.dataset.imgdata.startsWith('data:') ? thumbBox.dataset.imgdata : '';
     const imgUrl   = document.getElementById('promo-img-'+i)?.value || '';
     return {
       active:     document.getElementById('promo-active-'+i)?.checked || false,
