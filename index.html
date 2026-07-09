@@ -25,7 +25,7 @@
   <script>
     const SUPABASE_URL = 'https://twewgozdynowoieyqrcf.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3ZXdnb3pkeW5vd29pZXlxcmNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MzM4MjEsImV4cCI6MjA5OTEwOTgyMX0.p8niB1AotODvOlTg529rWz4BsPVRwHqflx5EXasgn5s';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   </script>
 
   <style>
@@ -786,7 +786,7 @@
 
     // 2. Requête en temps réel vers Supabase
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('pharmacies')
         .select('horaires')
         .eq('slug', 'pharmacie-nhean')
