@@ -515,7 +515,7 @@ async function syncToSupabase(cfg, indicator) {
       horaires: cfg.pharmacy.horairesSemaine // On envoie les horaires dans la colonne JSONB
     };
 
-    const response = await fetch(`${SUPABASE_URL}pharmacies`, {
+    const response = await fetch(`${SUPABASE_URL}pharmacies?on_conflict=slug`, {
       method: 'POST', // Avec le header Prefer, POST agit comme un UPSERT
       headers: {
         'apikey': SUPABASE_KEY,
