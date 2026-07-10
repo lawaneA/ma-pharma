@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Swift'Link — Pharmacie du Quatrième</title>
+  <title>Swift'Link — Pharmacie Delaunay</title>
   <link rel="icon" type="image/png" href="favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
@@ -336,19 +336,19 @@
 
   <!-- ══ HEADER PROFIL ══ -->
   <div class="profile-section">
-    <img class="profile-avatar" src="Logo-pharma-13004.jpg" alt="Logo pharmacie">
-    <div class="profile-name">Pharmacie du Quatrième</div>
-    <div class="profile-sub">Votre pharmacie de confiance à Marseille</div>
+    <img class="profile-avatar" src="Logo-pharma-delaunay.jpg" alt="Logo pharmacie">
+    <div class="profile-name">Pharmacie Delaunay</div>
+    <div class="profile-sub">Votre pharmacie de confiance à Sens</div>
 
     <!-- 4 icônes de contact -->
     <div class="contact-icons">
       <div style="display:flex; flex-direction:column; align-items:center;">
-        <a class="contact-icon-btn" href="tel:+33491649598">
+        <a class="contact-icon-btn" href="tel:+33386839933">
           <img src="phone.svg" alt="Téléphone">
         </a>
       </div>
       <div style="display:flex; flex-direction:column; align-items:center;">
-        <a class="contact-icon-btn" href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x12c9bfe2e004eff7:0x66654153b7053591?sa=X&ved=1t:8290&ictx=111" target="_blank">
+        <a class="contact-icon-btn" href="https://maps.app.goo.gl/TRXNzDr3H5zR8fqb6" target="_blank">
           <img src="map-pin.svg" alt="Adresse">
         </a>
       </div>
@@ -366,31 +366,23 @@
   </div>
 
   <!-- ══ LIENS SOCIAUX ══ -->
-  <div style="display:flex; gap:20px; justify-content:center; align-items:flex-start; width:100%; max-width:480px; padding:0 16px; margin-bottom:20px;">
+  <div style="display:flex; gap:32px; justify-content:center; align-items:flex-start; width:100%; max-width:480px; padding:0 16px; margin-bottom:20px;">
 
     <!-- Google Avis -->
-    <a href="https://reviewthis.biz/PHA-QUATRIEME" target="_blank" style="display:flex; flex-direction:column; align-items:center; gap:10px; text-decoration:none;">
+    <a href="https://reviewthis.biz/PHA-DELAUNAY" target="_blank" style="display:flex; flex-direction:column; align-items:center; gap:10px; text-decoration:none;">
       <img src="google-avis-icon.png" alt="Google Avis" style="width:100px; height:100px; object-fit:contain; border-radius:20px;">
       <div style="text-align:center; font-size:13px; font-weight:500; color:#111; line-height:1.4;">
         Notez nous sur <br>Google !
       </div>
     </a>
 
-    <!-- Instagram -->
-    <a href="https://www.instagram.com/pharmacieduquatrieme?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" style="display:flex; flex-direction:column; align-items:center; gap:10px; text-decoration:none;">
-      <img src="instagram-icon.png" alt="Instagram" style="width:100px; height:100px; object-fit:contain; border-radius:22px;">
+    <!--Facebook-->
+    <a href="https://www.facebook.com/PharmacieDelaunay" target="_blank" style="display:flex; flex-direction:column; align-items:center; gap:10px; text-decoration:none;">
+      <img src="facebook-icon.png" alt="Facebook" style="width:100px; height:100px; object-fit:contain; border-radius:22px;">
       <div style="text-align:center; font-size:13px; font-weight:500; color:#111; line-height:1.4;">
-        Suivez nous sur<br>Instagram !
+        Suivez nous sur<br>Facebook !
       </div>
     </a>
-
-    <!-- Website -->
-<a href="https://www.pharmacieduquatrieme.fr" target="_blank" style="display:flex; flex-direction:column; align-items:center; gap:10px; text-decoration:none;">
-  <img src="website-icon.png" alt="Site web" style="width:100px; height:100px; object-fit:contain; border-radius:20px;">
-  <div style="text-align:center; font-size:13px; font-weight:500; color:#111; line-height:1.4;">
-    Visitez notre<br>site web !
-  </div>
-</a>
 
   </div>
 
@@ -675,7 +667,7 @@
         my_file:      reader.result,
         sent_at:      new Date().toLocaleString('fr-FR')
       };
-      emailjs.send('service_ehw7pcv', 'template_qehzg98', templateParams)
+      emailjs.send('service_ehw7pcv', 'template_5bs63dq', templateParams)
         .then(function() {
           trackSend();
           playSound('success');
@@ -757,7 +749,7 @@
       const { data, error } = await supabaseClient
         .from('pharmacies')
         .select('horaires')
-        .eq('slug', 'pharmacie-quatrieme')
+        .eq('slug', 'pharmacie-delaunay')
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
