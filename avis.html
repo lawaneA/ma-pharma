@@ -13,8 +13,9 @@
       background: #f0f4f8;
       min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      padding: 24px 0 48px;
     }
 
     .card {
@@ -33,16 +34,17 @@
     #step-form   { display: none; }
     #step-thanks { display: none; }
 
-    .emoji {
-      font-size: 48px;
-      margin-bottom: 20px;
+    .logo-brand {
+      width: 96px;
+      height: auto;
+      margin: 0 auto 20px;
       display: block;
     }
 
     .card h1 {
       font-size: 22px;
       font-weight: 700;
-      color: #0d2f3f;
+      color: #0012ff;
       margin-bottom: 8px;
     }
 
@@ -111,6 +113,12 @@
     /* ── ÉTAPE 2 : formulaire ── */
     #step-form h1 { margin-bottom: 8px; }
 
+    .emoji {
+      font-size: 48px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
     .form-group {
       text-align: left;
       margin: 24px 0 20px;
@@ -174,6 +182,21 @@
       font-size: 28px;
       color: #f5a623;
     }
+
+    /* ── AVIS RÉCENTS (bas de page) ── */
+    .reviews-section {
+      width: 100%;
+      max-width: 480px;
+      padding: 0 24px;
+      margin-top: 8px;
+    }
+    .reviews-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0d2f3f;
+      text-align: center;
+      margin-bottom: 16px;
+    }
   </style>
 </head>
 <body>
@@ -182,7 +205,7 @@
 
   <!-- ÉTAPE 1 : noter -->
   <div id="step-rating">
-    <span class="emoji">⭐</span>
+    <img class="logo-brand" src="logo-diagonal.png" alt="Diagonal Supermarché">
     <h1>Comment s'est passée votre visite ?</h1>
     <p class="sub">Votre avis nous aide à mieux vous servir.</p>
 
@@ -222,6 +245,14 @@
     <p class="sub">Votre avis a bien été transmis à notre équipe. Nous ferons tout pour nous améliorer.</p>
   </div>
 
+</div>
+
+<!-- ══ AVIS GOOGLE RÉCENTS ══ -->
+<div class="reviews-section">
+  <div class="reviews-title">Ce que nos clients disent</div>
+  <!-- Elfsight Google Reviews | Untitled Google Reviews -->
+  <script src="https://elfsightcdn.com/platform.js" async></script>
+  <div class="elfsight-app-0b19082f-a382-4d30-8df2-28842ec21225" data-elfsight-app-lazy></div>
 </div>
 
 <script>
