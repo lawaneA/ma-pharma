@@ -882,12 +882,28 @@ function collectInfo() {
     sub:       document.getElementById('ph-sub').value,
     tel:       document.getElementById('ph-tel').value,
     maps:      document.getElementById('ph-maps').value,
-    reseaux_sociaux: {
-      insta: { active: document.getElementById('soc-insta-active')?.checked || false, val: document.getElementById('soc-insta-val')?.value || '' },
-      fb:    { active: document.getElementById('soc-fb-active')?.checked || false,    val: document.getElementById('soc-fb-val')?.value || '' },
-      avis:  { active: document.getElementById('soc-avis-active')?.checked || false,  val: document.getElementById('soc-avis-val')?.value || '' },
-      web:   { active: document.getElementById('soc-web-active')?.checked || false,   val: document.getElementById('soc-web-val')?.value || '' }
-    },
+    
+    reseaux: {
+  instagram: {
+    actif: document.getElementById('soc-insta-active').checked,
+    url: (() => {
+      const v = document.getElementById('soc-insta-val').value.trim().replace('@','');
+      return v ? 'https://instagram.com/' + v : '';
+    })()
+  },
+  facebook: {
+    actif: document.getElementById('soc-fb-active').checked,
+    url: document.getElementById('soc-fb-val').value.trim()
+  },
+  google: {
+    actif: document.getElementById('soc-avis-active').checked,
+    url: document.getElementById('soc-avis-val').value.trim()
+  },
+  website: {
+    actif: document.getElementById('soc-web-active').checked,
+    url: document.getElementById('soc-web-val').value.trim()
+  }
+},
     horaires:        collectHoraires().texte,
     horairesSemaine: collectHoraires().semaine,
     logoData:        logoData.startsWith('data:') ? logoData : '',
