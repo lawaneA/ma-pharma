@@ -950,6 +950,32 @@
         .eq('slug', 'pharmacie-nhean')
         .single();
 
+      // Dans le .then() ou après le await supabase
+const r = typeof data.reseaux === 'string'
+  ? JSON.parse(data.reseaux)
+  : (data.reseaux || {});
+
+// Log de diagnostic
+console.log('reseaux reçus:', r);
+console.log('instagram:', r.instagram);
+
+let iconsHtml = '';
+
+if (r.google?.actif && r.google?.url)
+  iconsHtml += buildMidIcon(r.google.url, 'google-avis-icon.png', 'Notez nous sur<br>Google !');
+
+if (r.instagram?.actif && r.instagram?.url)
+  iconsHtml += buildMidIcon(r.instagram.url, 'instagram-icon.png', 'Suivez nous sur<br>Instagram !');
+
+if (r.facebook?.actif && r.facebook?.url)
+  iconsHtml += buildMidIcon(r.facebook.url, 'facebook-icon.png', 'Suivez nous sur<br>Facebook !');
+
+if (r.website?.actif && r.website?.url)
+  iconsHtml += buildMidIcon(r.website.url, 'website-icon.png', 'Visitez notre<br>site web !');
+
+document.getElementById('mid-icons-container').innerHTML = iconsHtml;
+  
+
       if (error && error.code !== 'PGRST116') throw error;
       if (data && data.horaires) {
         semaine = typeof data.horaires === 'string' ? JSON.parse(data.horaires) : data.horaires;
