@@ -573,7 +573,7 @@ async function syncToSupabase(cfg, indicator) {
     });
 
     
-    if (!res.ok) {
+    if (!response.ok) {
       const errBody = await res.text();
       console.error('Supabase pharmacies 400 detail:', errBody);
       throw new Error('Erreur réseau Supabase');
