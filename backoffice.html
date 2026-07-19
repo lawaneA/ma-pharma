@@ -551,14 +551,15 @@ function autoSave() {
 
 async function syncToSupabase(cfg, indicator) {
   try {
-    // 1. Sauvegarde des infos globales dans la table "pharmacies"
     const payload = {
       slug: SLUG,
-      nom: cfg.pharmacy.name,
-      soustitre: cfg.pharmacy.sub,
-      logo_base64: cfg.pharmacy.logoData || null,
-      reseaux_sociaux: cfg.pharmacy.reseaux_sociaux,
-      horaires: cfg.pharmacy.horairesSemaine
+      nom: cfg.pharmacy.name || '',
+      soustitre: cfg.pharmacy.sub || '',
+      logo_base64: cfg.pharmacy.logoData || '',
+      banniere_base64: cfg.pharmacy.bannerData || '',
+      docteur: cfg.pharmacy.docteur || '',
+      reseaux: cfg.pharmacy.reseaux || {},
+      horaires: cfg.pharmacy.horairesSemaine || {}
     };
 
     const response = await fetch(`${SUPABASE_URL}pharmacies?on_conflict=slug`, {
@@ -572,14 +573,12 @@ async function syncToSupabase(cfg, indicator) {
       body: JSON.stringify(payload)
     });
 
-    
     if (!response.ok) {
-      const errBody = await res.text();
+      const errBody = await response.text();
       console.error('Supabase pharmacies 400 detail:', errBody);
       throw new Error('Erreur réseau Supabase');
     }
 
-    // 2. Sauvegarde des promotions dans la table "promos"
     const promosPayload = cfg.promos.map((p, i) => ({
       pharmacie_slug: SLUG,
       position: i + 1,
@@ -602,7 +601,11 @@ async function syncToSupabase(cfg, indicator) {
       body: JSON.stringify(promosPayload)
     });
 
-    if (!promosResponse.ok) throw new Error('Erreur réseau Supabase (promos)');
+    if (!promosResponse.ok) {
+      const errBody = await promosResponse.text();
+      console.error('Supabase promos 400 detail:', errBody);
+      throw new Error('Erreur réseau Supabase (promos)');
+    }
 
     indicator.textContent = 'En ligne ✓';
     indicator.style.color = '#16a34a';
