@@ -1042,16 +1042,20 @@ document.getElementById('mid-icons-container').innerHTML = iconsHtml;
       if (data.soustitre) document.getElementById('profile-sub-display').textContent = data.soustitre;
       if (data.logo_base64) document.getElementById('profile-avatar-img').src = data.logo_base64;
 
-      // 2. Génération dynamique des Mid Icons UNIQUEMENT s'ils sont cochés en BO
-      const soc = data.reseaux_sociaux || {};
+      // 2. On lit la colonne "reseaux" (ou "reseaux_sociaux" par sécurité)
+      const soc = data.reseaux || data.reseaux_sociaux || {};
       const container = document.getElementById('dynamic-social-links');
-      container.innerHTML = ''; // On réinitialise pour n'afficher que la sélection du BO
+      container.innerHTML = ''; // On vide pour n'afficher que la sélection du BO
 
-      // Google Avis
-      if (soc.avis && soc.avis.active) {
+      // ── GOOGLE AVIS ── (cherche 'google' ou 'avis')
+      const googleObj = soc.google || soc.avis;
+      const googleActif = googleObj?.actif ?? googleObj?.active;
+      const googleUrlVal = googleObj?.url || googleObj?.val;
+      
+      if (googleObj && googleActif) {
         let url = 'https://reviewthis.biz/PHA-NHEAN';
-        if (soc.avis.val && soc.avis.val.trim() !== '') {
-          url = `https://www.google.com/search?q=${encodeURIComponent(soc.avis.val + ' avis google')}&tbm=lcl`;
+        if (googleUrlVal && googleUrlVal.trim() !== '') {
+          url = googleUrlVal.startsWith('http') ? googleUrlVal : `https://www.google.com/search?q=${encodeURIComponent(googleUrlVal + ' avis google')}&tbm=lcl`;
         }
         container.innerHTML += `
           <a href="${url}" target="_blank" class="social-card-item">
@@ -1060,12 +1064,16 @@ document.getElementById('mid-icons-container').innerHTML = iconsHtml;
           </a>`;
       }
 
-      // Instagram
-      if (soc.insta && soc.insta.active) {
+      // ── INSTAGRAM ── (cherche 'instagram' ou 'insta')
+      const instaObj = soc.instagram || soc.insta;
+      const instaActif = instaObj?.actif ?? instaObj?.active;
+      const instaUrlVal = instaObj?.url || instaObj?.val;
+
+      if (instaObj && instaActif) {
         let instaUrl = 'https://www.instagram.com/swiftup_fr';
-        if (soc.insta.val && soc.insta.val.trim() !== '') {
-          const clean = soc.insta.val.replace(/.*instagram\.com\//, '').replace(/\//g, '');
-          instaUrl = `https://instagram.com/${clean}`;
+        if (instaUrlVal && instaUrlVal.trim() !== '') {
+          const clean = instaUrlVal.replace(/.*instagram\.com\//, '').replace(/\//g, '').replace('@', '');
+          instaUrl = instaUrlVal.startsWith('http') ? instaUrlVal : `https://instagram.com/${clean}`;
         }
         container.innerHTML += `
           <a href="${instaUrl}" target="_blank" class="social-card-item">
@@ -1074,9 +1082,13 @@ document.getElementById('mid-icons-container').innerHTML = iconsHtml;
           </a>`;
       }
 
-      // Facebook
-      if (soc.fb && soc.fb.active && soc.fb.val) {
-        let fbUrl = soc.fb.val.startsWith('http') ? soc.fb.val : `https://facebook.com/${soc.fb.val}`;
+      // ── FACEBOOK ── (cherche 'facebook' ou 'fb')
+      const fbObj = soc.facebook || soc.fb;
+      const fbActif = fbObj?.actif ?? fbObj?.active;
+      const fbUrlVal = fbObj?.url || fbObj?.val;
+
+      if (fbObj && fbActif && fbUrlVal) {
+        let fbUrl = fbUrlVal.startsWith('http') ? fbUrlVal : `https://facebook.com/${fbUrlVal}`;
         container.innerHTML += `
           <a href="${fbUrl}" target="_blank" class="social-card-item">
             <div class="social-card-fallback" style="background:#1877f2;">📘</div>
@@ -1084,9 +1096,13 @@ document.getElementById('mid-icons-container').innerHTML = iconsHtml;
           </a>`;
       }
 
-      // Site Web
-      if (soc.web && soc.web.active && soc.web.val) {
-        let webUrl = soc.web.val.startsWith('http') ? soc.web.val : `https://${soc.web.val}`;
+      // ── SITE WEB ── (cherche 'website' ou 'web')
+      const webObj = soc.website || soc.web;
+      const webActif = webObj?.actif ?? webObj?.active;
+      const webUrlVal = webObj?.url || webObj?.val;
+
+      if (webObj && webActif && webUrlVal) {
+        let webUrl = webUrlVal.startsWith('http') ? webUrlVal : `https://${webUrlVal}`;
         container.innerHTML += `
           <a href="${webUrl}" target="_blank" class="social-card-item">
             <div class="social-card-fallback" style="background:#0012ff;">🌐</div>
