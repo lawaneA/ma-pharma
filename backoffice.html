@@ -551,16 +551,16 @@ function autoSave() {
 
 async function syncToSupabase(cfg, indicator) {
   try {
-    const payload = {
-      slug: SLUG,
-      nom: cfg.pharmacy.name || '',
-      soustitre: cfg.pharmacy.sub || '',
-      logo_base64: cfg.pharmacy.logoData || '',
-      banniere_base64: cfg.pharmacy.bannerData || '',
-      docteur: cfg.pharmacy.docteur || '',
-      reseaux: cfg.pharmacy.reseaux || {},
-      horaires: cfg.pharmacy.horairesSemaine || {}
-    };
+   const payload = {
+  slug,
+  nom:             cfg.pharmacy.name        || '',
+  soustitre:       cfg.pharmacy.sub         || '',
+  horaires:        cfg.pharmacy.horairesSemaine || {},
+  logo_base64:     cfg.pharmacy.logoData    || '',
+  banniere_base64: cfg.pharmacy.bannerData  || '',
+  docteur:         cfg.pharmacy.docteur     || '',
+  reseaux:         cfg.pharmacy.reseaux     || {}   // ← était reseaux_sociaux
+};
 
     const response = await fetch(`${SUPABASE_URL}pharmacies?on_conflict=slug`, {
       method: 'POST',
@@ -850,15 +850,20 @@ function fillInfo(cfg) {
   document.getElementById('ph-tel').value  = p.tel  || '';
   document.getElementById('ph-maps').value = p.maps || '';
   
-  const soc = p.reseaux_sociaux || { insta:{active:true,val:''}, fb:{active:false,val:''}, avis:{active:true,val:''}, web:{active:false,val:''} };
-  document.getElementById('soc-insta-active').checked = soc.insta?.active ?? true;
-  document.getElementById('soc-insta-val').value      = soc.insta?.val || p.insta || '';
-  document.getElementById('soc-fb-active').checked    = soc.fb?.active ?? false;
-  document.getElementById('soc-fb-val').value         = soc.fb?.val || '';
-  document.getElementById('soc-avis-active').checked  = soc.avis?.active ?? true;
-  document.getElementById('soc-avis-val').value       = soc.avis?.val || p.avisName || '';
-  document.getElementById('soc-web-active').checked   = soc.web?.active ?? false;
-  document.getElementById('soc-web-val').value        = soc.web?.val || p.web || '';
+const soc = p.reseaux || {};
+
+document.getElementById('soc-insta-active').checked = soc.instagram?.actif ?? true;
+document.getElementById('soc-insta-val').value      = (soc.instagram?.url || '')
+  .replace('https://instagram.com/', '').replace('@','');
+
+document.getElementById('soc-fb-active').checked    = soc.facebook?.actif ?? false;
+document.getElementById('soc-fb-val').value         = soc.facebook?.url || '';
+
+document.getElementById('soc-avis-active').checked  = soc.google?.actif ?? true;
+document.getElementById('soc-avis-val').value       = soc.google?.url || '';
+
+document.getElementById('soc-web-active').checked   = soc.website?.actif ?? false;
+document.getElementById('soc-web-val').value        = soc.website?.url || '';
 
   buildHorairesGrid(p.horairesSemaine || {});
   document.getElementById('ph-logo').value   = '';
@@ -883,25 +888,25 @@ function collectInfo() {
     tel:       document.getElementById('ph-tel').value,
     maps:      document.getElementById('ph-maps').value,
     
-    reseaux: {
+   reseaux: {
   instagram: {
     actif: document.getElementById('soc-insta-active').checked,
     url: (() => {
-      const v = document.getElementById('soc-insta-val').value.trim().replace('@','');
+      const v = (document.getElementById('soc-insta-val').value || '').trim().replace('@','');
       return v ? 'https://instagram.com/' + v : '';
     })()
   },
   facebook: {
     actif: document.getElementById('soc-fb-active').checked,
-    url: document.getElementById('soc-fb-val').value.trim()
+    url: (document.getElementById('soc-fb-val').value || '').trim()
   },
   google: {
     actif: document.getElementById('soc-avis-active').checked,
-    url: document.getElementById('soc-avis-val').value.trim()
+    url: (document.getElementById('soc-avis-val').value || '').trim()
   },
   website: {
     actif: document.getElementById('soc-web-active').checked,
-    url: document.getElementById('soc-web-val').value.trim()
+    url: (document.getElementById('soc-web-val').value || '').trim()
   }
 },
     horaires:        collectHoraires().texte,
