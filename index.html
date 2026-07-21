@@ -955,10 +955,6 @@ const r = typeof data.reseaux === 'string'
   ? JSON.parse(data.reseaux)
   : (data.reseaux || {});
 
-// Log de diagnostic
-console.log('reseaux reçus:', r);
-console.log('instagram:', r.instagram);
-
 let iconsHtml = '';
 
 if (r.google?.actif && r.google?.url)
