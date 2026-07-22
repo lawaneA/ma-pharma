@@ -241,7 +241,7 @@ async function redirectToDashboard(userId) {
     localStorage.setItem('swiftlink_user_id', userId);
 
     // Rediriger vers le backoffice
-    window.location.href = '/backoffice.html?slug=' + slug;
+    window.location.href = 'https://swiftypharm.fr/backoffice.html?slug=' + slug;
 
   } catch(err) {
     showLoader(false);
